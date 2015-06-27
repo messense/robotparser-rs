@@ -72,8 +72,8 @@ impl Entry {
     /// check if this entry applies to the specified agent
     fn applies_to(&self, useragent: &str) -> bool {
         let ua = useragent.split("/").nth(0).unwrap_or("");
-        let useragents = self.useragents.borrow().clone();
-        for agent in &useragents {
+        let useragents = self.useragents.borrow();
+        for agent in &*useragents {
             if agent == "*" {
                 return true;
             }
@@ -89,8 +89,8 @@ impl Entry {
     /// - our agent applies to this entry
     /// - filename is URL decoded
     fn allowance(&self, filename: &str) -> bool {
-        let rulelines = self.rulelines.borrow().clone();
-        for line in &rulelines {
+        let rulelines = self.rulelines.borrow();
+        for line in &*rulelines {
             if line.applies_to(filename) {
                 return line.allowance
             }
@@ -109,13 +109,13 @@ impl Entry {
     }
 
     fn has_useragent(&self, useragent: &str) -> bool {
-        let useragents = self.useragents.borrow().clone();
+        let useragents = self.useragents.borrow();
         useragents.contains(&useragent.to_owned())
     }
 
     fn is_empty(&self) -> bool {
-        let useragents = self.useragents.borrow().clone();
-        let rulelines = self.rulelines.borrow().clone();
+        let useragents = self.useragents.borrow();
+        let rulelines = self.rulelines.borrow();
         useragents.is_empty() && rulelines.is_empty()
     }
 }
@@ -303,14 +303,14 @@ impl RobotFileParser {
             ref u if !u.is_empty() => u.to_owned(),
             _ => "/".to_owned(),
         };
-        let entries = self.entries.borrow().clone();
-        for entry in &entries {
+        let entries = self.entries.borrow();
+        for entry in &*entries {
             if entry.applies_to(useragent) {
                 return entry.allowance(&url_str);
             }
         }
         // try the default entry last
-        let default_entry = self.default_entry.borrow().clone();
+        let default_entry = self.default_entry.borrow();
         if !default_entry.is_empty() {
             return default_entry.allowance(&url_str);
         }
