@@ -71,7 +71,7 @@ impl Entry {
 
     /// check if this entry applies to the specified agent
     fn applies_to(&self, useragent: &str) -> bool {
-        let ua = useragent.split("/").nth(0).unwrap_or("");
+        let ua = useragent.split("/").nth(0).unwrap_or("").to_lowercase();
         let useragents = self.useragents.borrow();
         for agent in &*useragents {
             if agent == "*" {
