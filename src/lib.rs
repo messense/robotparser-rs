@@ -100,7 +100,7 @@ impl Entry {
 
     fn push_useragent(&self, useragent: &str) {
         let mut useragents = self.useragents.borrow_mut();
-        useragents.push(useragent.to_owned());
+        useragents.push(useragent.to_lowercase().to_owned());
     }
 
     fn push_ruleline(&self, ruleline: RuleLine) {
@@ -298,7 +298,7 @@ impl RobotFileParser {
         }
         // search for given user agent matches
         // the first match counts
-        let decoded_url = String::from_utf8(percent_decode(url.as_bytes())).unwrap_or("".to_owned());
+        let decoded_url = String::from_utf8(percent_decode(url.trim().as_bytes())).unwrap_or("".to_owned());
         let url_str = match decoded_url {
             ref u if !u.is_empty() => u.to_owned(),
             _ => "/".to_owned(),

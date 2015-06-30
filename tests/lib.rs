@@ -115,3 +115,98 @@ fn test_robots_txt_6() {
     let bad = vec![];
     robot_test_simple(doc, good, bad);
 }
+
+#[test]
+fn test_robots_txt_7() {
+    let doc = "\n\
+    User-agent: Googlebot\n\
+    Allow: /folder1/myfile.html\n\
+    Disallow: /folder1/\n\
+    ";
+    let good = vec!["/folder1/myfile.html"];
+    let bad = vec!["/folder1/anotherfile.html"];
+    robot_test(doc, good, bad, "Googlebot");
+}
+
+/// This file is incorrect because "Googlebot" is a substring of "Googlebot-Mobile"
+#[test]
+fn test_robots_txt_8() {
+    let doc = "\n\
+    User-agent: Googlebot\n\
+    Disallow: /\n\
+    \n\
+    User-agent: Googlebot-Mobile\n\
+    Allow: /\n\
+    ";
+    let good = vec![];
+    let bad = vec!["/something.jpg"];
+    robot_test(doc, good.clone(), bad.clone(), "Googlebot");
+    robot_test(doc, good, bad, "Googlebot-Mobile");
+}
+
+#[test]
+fn test_robots_txt_9() {
+    let doc = "\n\
+    User-agent: Googlebot-Mobile\n\
+    Allow: /\n\
+    \n\
+    User-agent: Googlebot\n\
+    Disallow: /\n\
+    ";
+    let good = vec![];
+    let bad = vec!["/something.jpg"];
+    robot_test(doc, good.clone(), bad.clone(), "Googlebot");
+    robot_test(doc, bad, good, "Googlebot-Mobile");
+}
+
+#[test]
+fn test_robots_txt_10() {
+    let doc = "\n\
+    User-agent: Googlebot\n\
+    Allow: /folder1/myfile.html\n\
+    Disallow: /folder1/\n\
+    ";
+    let good = vec!["/folder1/myfile.html"];
+    let bad = vec!["/folder1/anotherfile.html"];
+    robot_test(doc, good, bad, "googlebot");
+}
+
+/// query string support
+#[test]
+fn test_robots_txt_11() {
+    let doc = "\n\
+    User-agent: *\n\
+    Disallow: /some/path?name=value\n\
+    ";
+    let good = vec!["/some/path"];
+    let bad = vec!["/some/path?name=value"];
+    robot_test_simple(doc, good, bad);
+}
+
+/// obey first * entry
+#[test]
+fn test_robots_txt_12() {
+    let doc = "\n\
+    User-agent: *\n\
+    Disallow: /some/path\n\
+    \n\
+    User-agent: *\n\
+    Disallow: /another/path\n\
+    ";
+    let good = vec!["/another/path"];
+    let bad = vec!["/some/path"];
+    robot_test_simple(doc, good, bad);
+}
+
+/// Empty query. Normalizing the url first.
+#[test]
+fn test_robots_txt_13() {
+    let doc = "\n\
+    User-agent: *\n\
+    Allow: /some/path?\n\
+    Disallow: /another/path?\n\
+    ";
+    let good = vec!["/some/path?"];
+    let bad = vec!["/another/path?"];
+    robot_test_simple(doc, good, bad);
+}
