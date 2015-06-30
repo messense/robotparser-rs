@@ -2,8 +2,17 @@
 name = "robotparser"
 version = "0.1.0"
 authors = ["messense <messense@icloud.com>"]
+description = "robots.txt parser for Rust"
+repository = "https://github.com/messense/robotparser-rs"
+homepage = "https://github.com/messense/robotparser-rs"
+readme = "README.md"
+keywords = ["robot", "robots", "robots.txt", "parser", "spider", "crawler"]
+license = "MIT"
 
 [dependencies]
 hyper = "*"
 url = "*"
 time = "*"
+
+[features]
+unstable = []
