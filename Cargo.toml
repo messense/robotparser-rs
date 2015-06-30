@@ -6,7 +6,7 @@ description = "robots.txt parser for Rust"
 repository = "https://github.com/messense/robotparser-rs"
 homepage = "https://github.com/messense/robotparser-rs"
 readme = "README.md"
-keywords = ["robot", "robots", "robots.txt", "parser", "spider", "crawler"]
+keywords = ["robot", "robots", "parser", "spider", "crawler"]
 license = "MIT"
 
 [dependencies]
