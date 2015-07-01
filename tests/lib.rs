@@ -210,3 +210,10 @@ fn test_robots_txt_13() {
     let bad = vec!["/another/path?"];
     robot_test_simple(doc, good, bad);
 }
+
+#[test]
+fn test_robots_txt_read() {
+    let parser = RobotFileParser::new("http://www.python.org/robots.txt");
+    parser.read();
+    assert!(parser.can_fetch("*", "http://www.python.org/robots.txt"));
+}
