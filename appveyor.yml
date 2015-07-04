@@ -1,4 +1,6 @@
 install:
+  - ps: Start-FileDownload "http://slproweb.com/download/Win64OpenSSL-1_0_2c.exe"
+  - ps: Start-Process "Win64OpenSSL-1_0_2c.exe" -ArgumentList "/silent /verysilent /sp- /suppressmsgboxes" -Wait
   - ps: Start-FileDownload 'https://static.rust-lang.org/dist/rust-nightly-i686-pc-windows-gnu.exe'
   - rust-nightly-i686-pc-windows-gnu.exe /VERYSILENT /NORESTART /DIR="C:\Program Files (x86)\Rust"
   - SET PATH=%PATH%;C:\Program Files (x86)\Rust\bin
