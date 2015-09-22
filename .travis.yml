@@ -1,7 +1,7 @@
 sudo: required
 language: rust
 rust:
-  # - stable
+  - stable
   - beta
   - nightly
 before_script:
