@@ -122,8 +122,8 @@ impl Entry {
 
 
 impl RobotFileParser {
-    pub fn new(url: &str) -> RobotFileParser {
-        let parsed_url = Url::parse(url).unwrap();
+    pub fn new<T: AsRef<str>>(url: T) -> RobotFileParser {
+        let parsed_url = Url::parse(url.as_ref()).unwrap();
         RobotFileParser {
             entries: RefCell::new(vec![]),
             default_entry: RefCell::new(Entry::new()),
@@ -153,8 +153,8 @@ impl RobotFileParser {
     }
 
     /// Sets the URL referring to a robots.txt file.
-    pub fn set_url(&mut self, url: &str) {
-        let parsed_url = Url::parse(url).unwrap();
+    pub fn set_url<T: AsRef<str>>(&mut self, url: T) {
+        let parsed_url = Url::parse(url.as_ref()).unwrap();
         self.url = parsed_url.clone();
         self.host = parsed_url.domain().unwrap().to_owned();
         self.path = parsed_url.path().unwrap().join("/");
@@ -181,7 +181,7 @@ impl RobotFileParser {
                 let mut buf = String::new();
                 res.read_to_string(&mut buf).unwrap();
                 let lines: Vec<&str> = buf.split("\n").collect();
-                self.parse(lines);
+                self.parse(&lines);
             },
             _ => {},
         }
@@ -207,7 +207,7 @@ impl RobotFileParser {
     /// We allow that a user-agent: line is not preceded by
     /// one or more blank lines.
     ///
-    pub fn parse(&self, lines: Vec<&str>) {
+    pub fn parse<T: AsRef<str>>(&self, lines: &[T]) {
         use url::percent_encoding::percent_decode;
 
         // states:
@@ -218,8 +218,8 @@ impl RobotFileParser {
         let mut entry = Entry::new();
 
         self.modified();
-        for line in &lines {
-            let mut ln = line.clone();
+        for line in lines {
+            let mut ln = line.as_ref().clone();
             if ln.is_empty() {
                 match state {
                     1 => {
@@ -280,8 +280,11 @@ impl RobotFileParser {
     }
 
     /// Using the parsed robots.txt decide if useragent can fetch url
-    pub fn can_fetch(&self, useragent: &str, url: &str) -> bool {
+    pub fn can_fetch<T: AsRef<str>>(&self, useragent: T, url: T) -> bool {
         use url::percent_encoding::percent_decode;
+
+        let useragent = useragent.as_ref();
+        let url = url.as_ref();
 
         if self.disallow_all.get() {
             return false;

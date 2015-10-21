@@ -8,7 +8,7 @@ const AGENT: &'static str = "test_robotparser";
 fn robot_test(doc: &str, good_urls: Vec<&str>, bad_urls: Vec<&str>, agent: &str) {
     let parser = RobotFileParser::new("http://www.baidu.com/robots.txt");
     let lines: Vec<&str> = doc.split("\n").collect();
-    parser.parse(lines);
+    parser.parse(&lines);
     for url in &good_urls {
         assert!(parser.can_fetch(agent, url));
     }
