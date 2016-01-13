@@ -217,3 +217,14 @@ fn test_robots_txt_read() {
     parser.read();
     assert!(parser.can_fetch("*", "http://www.python.org/robots.txt"));
 }
+
+#[test]
+fn test_robots_text_crawl_delay() {
+    let parser = RobotFileParser::new("http://www.python.org/robots.txt");
+    let doc = "User-agent: Yandex\n\
+    Crawl-delay: 2.35\n\
+    Disallow: /search/\n";
+    let lines: Vec<&str> = doc.split("\n").collect();
+    parser.parse(&lines);
+    assert_eq!(2350, parser.get_crawl_delay("Yandex").unwrap());
+}
