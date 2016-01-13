@@ -1,6 +1,6 @@
 [package]
 name = "robotparser"
-version = "0.2.0"
+version = "0.3.0"
 authors = ["messense <messense@icloud.com>"]
 description = "robots.txt parser for Rust"
 repository = "https://github.com/messense/robotparser-rs"
