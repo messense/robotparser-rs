@@ -13,6 +13,7 @@ use std::cell::{Cell, RefCell};
 use url::Url;
 use hyper::{Client};
 use hyper::status::StatusCode;
+use std::time::Duration;
 
 /// A rule line is a single "Allow:" (allowance==True) or "Disallow:"
 /// (allowance==False) followed by a path."""
@@ -27,6 +28,7 @@ struct RuleLine {
 struct Entry {
     useragents: RefCell<Vec<String>>,
     rulelines: RefCell<Vec<RuleLine>>,
+    crawl_delay: Option<Duration>,
 }
 
 #[derive(Debug, Eq, PartialEq, Clone)]
@@ -66,6 +68,7 @@ impl Entry {
         Entry {
             useragents: RefCell::new(vec![]),
             rulelines: RefCell::new(vec![]),
+            crawl_delay: None,
         }
     }
 
@@ -117,6 +120,14 @@ impl Entry {
         let useragents = self.useragents.borrow();
         let rulelines = self.rulelines.borrow();
         useragents.is_empty() && rulelines.is_empty()
+    }
+
+    fn set_crawl_delay(&mut self,delay: Duration) {
+        self.crawl_delay = Some(delay);
+    }
+
+    fn get_crawl_delay(&self) -> Option<Duration> {
+        return self.crawl_delay.clone();
     }
 }
 
@@ -270,6 +281,21 @@ impl RobotFileParser {
                             state = 2;
                         }
                     },
+                    ref x if x == "crawl-delay" => {
+                        if state != 0 {
+                            let delay = part1.parse::<f64>();
+                            match delay {
+                                Ok(delay) => {
+                                    let delay_seconds = delay.trunc();
+                                    let delay_nanoseconds = delay.fract()* 10f64.powi(9);
+                                    let delay = Duration::new(delay_seconds as u64,delay_nanoseconds as u32);
+                                    entry.set_crawl_delay(delay);
+                                },
+                                Err(_) => {}
+                            }
+                            state = 2;
+                        }  
+                    }
                     _ => {},
                 }
             }
@@ -319,5 +345,20 @@ impl RobotFileParser {
         }
         // agent not found ==> access granted
         true
+    }
+
+    /// Returns the crawl delay for this user agent as a `Duration`, or None if no crawl delay is defined.
+    pub fn get_crawl_delay<T: AsRef<str>>(&self,useragent: T) -> Option<Duration> {
+        let useragent = useragent.as_ref();        
+        if self.last_checked.get() == 0 {
+            return None;
+        }
+        let entries = self.entries.borrow();
+        for entry in &*entries {
+            if entry.applies_to(useragent) {
+                return entry.get_crawl_delay();
+            }
+        }
+        return None;
     }
 }

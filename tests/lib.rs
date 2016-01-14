@@ -1,9 +1,9 @@
 extern crate robotparser;
 
 use robotparser::RobotFileParser;
+use std::time::Duration;
 
 const AGENT: &'static str = "test_robotparser";
-
 
 fn robot_test(doc: &str, good_urls: Vec<&str>, bad_urls: Vec<&str>, agent: &str) {
     let parser = RobotFileParser::new("http://www.baidu.com/robots.txt");
@@ -216,4 +216,15 @@ fn test_robots_txt_read() {
     let parser = RobotFileParser::new("http://www.python.org/robots.txt");
     parser.read();
     assert!(parser.can_fetch("*", "http://www.python.org/robots.txt"));
+}
+
+#[test]
+fn test_robots_text_crawl_delay() {
+    let parser = RobotFileParser::new("http://www.python.org/robots.txt");
+    let doc = "User-agent: Yandex\n\
+    Crawl-delay: 2.35\n\
+    Disallow: /search/\n";
+    let lines: Vec<&str> = doc.split("\n").collect();
+    parser.parse(&lines);
+    assert_eq!(Duration::new(2,350 * 1000 * 1000), parser.get_crawl_delay("Yandex").unwrap());
 }
