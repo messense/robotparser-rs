@@ -1,18 +1,18 @@
 [package]
-name = "robotparser"
-version = "0.3.0"
 authors = ["messense <messense@icloud.com>"]
 description = "robots.txt parser for Rust"
-repository = "https://github.com/messense/robotparser-rs"
 homepage = "https://github.com/messense/robotparser-rs"
-readme = "README.md"
 keywords = ["robot", "robots", "parser", "spider", "crawler"]
 license = "MIT"
+name = "robotparser"
+readme = "README.md"
+repository = "https://github.com/messense/robotparser-rs"
+version = "0.3.0"
 
 [dependencies]
-hyper = "*"
-url = "*"
-time = "*"
+hyper = "0.7"
+time = "0.1"
+url = "0.5"
 
 [features]
 unstable = []
