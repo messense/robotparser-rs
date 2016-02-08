@@ -1,7 +1,9 @@
 extern crate robotparser;
+extern crate url;
 
 use robotparser::RobotFileParser;
 use std::time::Duration;
+use url::Url;
 
 const AGENT: &'static str = "test_robotparser";
 
@@ -227,4 +229,24 @@ fn test_robots_text_crawl_delay() {
     let lines: Vec<&str> = doc.split("\n").collect();
     parser.parse(&lines);
     assert_eq!(Duration::new(2,350 * 1000 * 1000), parser.get_crawl_delay("Yandex").unwrap());
+}
+
+#[test]
+fn test_robots_text_sitemaps() {
+    let parser = RobotFileParser::new("http://www.python.org/robots.txt");
+    let doc = "User-agent: Yandex\n\
+    Sitemap:  http://example.com/sitemap1.xml
+    Sitemap:  http://example.com/sitemap2.xml
+    Sitemap:  http://example.com/sitemap3.xml
+    Disallow: /search/\n";
+    let lines: Vec<&str> = doc.split("\n").collect();
+    parser.parse(&lines);
+    assert_eq!(
+        vec![
+            Url::parse("http://example.com/sitemap1.xml").unwrap(),
+            Url::parse("http://example.com/sitemap2.xml").unwrap(),
+            Url::parse("http://example.com/sitemap3.xml").unwrap()
+        ], 
+        parser.get_sitemaps("Yandex")
+    );
 }
