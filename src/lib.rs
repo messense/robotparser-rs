@@ -383,7 +383,7 @@ impl RobotFileParser {
         return None;
     }
 
-    /// Returns the crawl delay for this user agent as a `Duration`, or None if no crawl delay is defined.
+    /// Returns the sitemaps for this user agent as a `Vec<Url>`.
     pub fn get_sitemaps<T: AsRef<str>>(&self,useragent: T) -> Vec<Url> {
         let useragent = useragent.as_ref();        
         if self.last_checked.get() == 0 {
