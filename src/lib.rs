@@ -29,6 +29,7 @@ struct Entry {
     useragents: RefCell<Vec<String>>,
     rulelines: RefCell<Vec<RuleLine>>,
     crawl_delay: Option<Duration>,
+    sitemaps: Vec<Url>,
 }
 
 #[derive(Debug, Eq, PartialEq, Clone)]
@@ -69,6 +70,7 @@ impl Entry {
             useragents: RefCell::new(vec![]),
             rulelines: RefCell::new(vec![]),
             crawl_delay: None,
+            sitemaps: Vec::new(),
         }
     }
 
@@ -128,6 +130,19 @@ impl Entry {
 
     fn get_crawl_delay(&self) -> Option<Duration> {
         return self.crawl_delay.clone();
+    }
+
+    fn add_sitemap(&mut self,url:&str) {
+        match Url::parse(url) {
+            Ok(url) => {
+                self.sitemaps.push(url);
+            },
+            Err(_) => {},
+        }
+    }
+
+    fn get_sitemaps(&self) -> Vec<Url> {
+        return self.sitemaps.clone();
     }
 }
 
@@ -295,6 +310,12 @@ impl RobotFileParser {
                             }
                             state = 2;
                         }  
+                    },
+                    ref x if x == "sitemap" => {
+                        if state != 0 {
+                            entry.add_sitemap(&part1);
+                            state = 2;
+                        }
                     }
                     _ => {},
                 }
@@ -360,5 +381,20 @@ impl RobotFileParser {
             }
         }
         return None;
+    }
+
+    /// Returns the crawl delay for this user agent as a `Duration`, or None if no crawl delay is defined.
+    pub fn get_sitemaps<T: AsRef<str>>(&self,useragent: T) -> Vec<Url> {
+        let useragent = useragent.as_ref();        
+        if self.last_checked.get() == 0 {
+            return Vec::new();
+        }
+        let entries = self.entries.borrow();
+        for entry in &*entries {
+            if entry.applies_to(useragent) {
+                return entry.get_sitemaps();
+            }
+        }
+        return Vec::new();
     }
 }
