@@ -4,6 +4,11 @@
 //! The robots.txt Exclusion Protocol is implemented as specified in
 //! http://www.robotstxt.org/norobots-rfc.txt
 //!
+#![cfg_attr(feature="clippy", feature(plugin))]
+#![cfg_attr(feature="clippy", plugin(clippy))]
+#![cfg_attr(feature="clippy", deny(clippy))]
+#![cfg_attr(feature="clippy", warn(cyclomatic_complexity))]
+
 extern crate url;
 extern crate time;
 extern crate hyper;
@@ -76,7 +81,7 @@ impl Entry {
 
     /// check if this entry applies to the specified agent
     fn applies_to(&self, useragent: &str) -> bool {
-        let ua = useragent.split("/").nth(0).unwrap_or("").to_lowercase();
+        let ua = useragent.split('/').nth(0).unwrap_or("").to_lowercase();
         let useragents = self.useragents.borrow();
         for agent in &*useragents {
             if agent == "*" {
@@ -129,20 +134,17 @@ impl Entry {
     }
 
     fn get_crawl_delay(&self) -> Option<Duration> {
-        return self.crawl_delay.clone();
+        self.crawl_delay
     }
 
     fn add_sitemap(&mut self,url:&str) {
-        match Url::parse(url) {
-            Ok(url) => {
-                self.sitemaps.push(url);
-            },
-            Err(_) => {},
+        if let Ok(url) = Url::parse(url) {
+            self.sitemaps.push(url);
         }
     }
 
     fn get_sitemaps(&self) -> Vec<Url> {
-        return self.sitemaps.clone();
+        self.sitemaps.clone()
     }
 }
 
@@ -206,7 +208,7 @@ impl RobotFileParser {
             StatusCode::Ok => {
                 let mut buf = String::new();
                 res.read_to_string(&mut buf).unwrap();
-                let lines: Vec<&str> = buf.split("\n").collect();
+                let lines: Vec<&str> = buf.split('\n').collect();
                 self.parse(&lines);
             },
             _ => {},
@@ -245,7 +247,7 @@ impl RobotFileParser {
 
         self.modified();
         for line in lines {
-            let mut ln = line.as_ref().clone();
+            let mut ln = line.as_ref();
             if ln.is_empty() {
                 match state {
                     1 => {
@@ -261,17 +263,14 @@ impl RobotFileParser {
                 }
             }
             // remove optional comment and strip line
-            match ln.find("#") {
-                Some(i) => {
-                    ln = &ln[0..i];
-                },
-                None => {},
+            if let Some(i) = ln.find('#') {
+                ln = &ln[0..i];
             }
             ln = ln.trim();
             if ln.is_empty() {
                 continue;
             }
-            let parts: Vec<&str> = ln.splitn(2, ":").collect();
+            let parts: Vec<&str> = ln.splitn(2, ':').collect();
             if parts.len() == 2 {
                 let part0 = parts[0].trim().to_lowercase();
                 let part1 = String::from_utf8(percent_decode(parts[1].trim().as_bytes())).unwrap_or("".to_owned());
@@ -298,15 +297,11 @@ impl RobotFileParser {
                     },
                     ref x if x == "crawl-delay" => {
                         if state != 0 {
-                            let delay = part1.parse::<f64>();
-                            match delay {
-                                Ok(delay) => {
-                                    let delay_seconds = delay.trunc();
-                                    let delay_nanoseconds = delay.fract()* 10f64.powi(9);
-                                    let delay = Duration::new(delay_seconds as u64,delay_nanoseconds as u32);
-                                    entry.set_crawl_delay(delay);
-                                },
-                                Err(_) => {}
+                            if let Ok(delay) = part1.parse::<f64>() {
+                                let delay_seconds = delay.trunc();
+                                let delay_nanoseconds = delay.fract() * 10f64.powi(9);
+                                let delay = Duration::new(delay_seconds as u64,delay_nanoseconds as u32);
+                                entry.set_crawl_delay(delay);
                             }
                             state = 2;
                         }  
@@ -380,7 +375,7 @@ impl RobotFileParser {
                 return entry.get_crawl_delay();
             }
         }
-        return None;
+        None
     }
 
     /// Returns the sitemaps for this user agent as a `Vec<Url>`.
@@ -395,6 +390,6 @@ impl RobotFileParser {
                 return entry.get_sitemaps();
             }
         }
-        return Vec::new();
+        vec![]
     }
 }
