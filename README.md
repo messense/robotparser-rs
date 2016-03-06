@@ -14,7 +14,7 @@ Add it to your ``Cargo.toml``:
 
 ```toml
 [dependencies]
-robotparser = "*"
+robotparser = "0.4"
 ```
 
 Add ``extern crate robotparser`` to your crate root and your're good to go!

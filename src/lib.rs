@@ -4,6 +4,31 @@
 //! The robots.txt Exclusion Protocol is implemented as specified in
 //! http://www.robotstxt.org/norobots-rfc.txt
 //!
+//! # Installation
+//!
+//! Add it to your ``Cargo.toml``:
+//!
+//! ```toml
+//! [dependencies]
+//! robotparser = "0.4"
+//! ```
+//!
+//! Add ``extern crate robotparser`` to your crate root and your're good to go!
+//!
+//! # Examples
+//!
+//! ```
+//! extern crate robotparser;
+//!
+//! use robotparser::RobotFileParser;
+//!
+//! fn main() {
+//!     let parser = RobotFileParser::new("http://www.python.org/robots.txt");
+//!     parser.read();
+//!     assert!(parser.can_fetch("*", "http://www.python.org/robots.txt"));
+//! }
+//! ```
+
 #![cfg_attr(feature="clippy", feature(plugin))]
 #![cfg_attr(feature="clippy", plugin(clippy))]
 #![cfg_attr(feature="clippy", deny(clippy))]
@@ -37,6 +62,7 @@ struct Entry {
     sitemaps: Vec<Url>,
 }
 
+/// robots.txt file parser
 #[derive(Debug, Eq, PartialEq, Clone)]
 pub struct RobotFileParser {
     entries: RefCell<Vec<Entry>>,
