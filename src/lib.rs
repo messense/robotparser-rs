@@ -175,6 +175,13 @@ impl Entry {
 }
 
 
+impl Default for Entry {
+    fn default() -> Entry {
+        Entry::new()
+    }
+}
+
+
 impl RobotFileParser {
     pub fn new<T: AsRef<str>>(url: T) -> RobotFileParser {
         let parsed_url = Url::parse(url.as_ref()).unwrap();
