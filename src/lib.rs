@@ -192,7 +192,7 @@ impl RobotFileParser {
             allow_all: Cell::new(false),
             url: parsed_url.clone(),
             host: parsed_url.domain().unwrap().to_owned(),
-            path: parsed_url.path().unwrap().join("/"),
+            path: parsed_url.path().to_owned(),
             last_checked: Cell::new(0i64),
         }
     }
@@ -218,7 +218,7 @@ impl RobotFileParser {
         let parsed_url = Url::parse(url.as_ref()).unwrap();
         self.url = parsed_url.clone();
         self.host = parsed_url.domain().unwrap().to_owned();
-        self.path = parsed_url.path().unwrap().join("/");
+        self.path = parsed_url.path().to_owned();
         self.last_checked.set(0i64);
     }
 
@@ -306,7 +306,7 @@ impl RobotFileParser {
             let parts: Vec<&str> = ln.splitn(2, ':').collect();
             if parts.len() == 2 {
                 let part0 = parts[0].trim().to_lowercase();
-                let part1 = String::from_utf8(percent_decode(parts[1].trim().as_bytes())).unwrap_or("".to_owned());
+                let part1 = String::from_utf8(percent_decode(parts[1].trim().as_bytes()).collect()).unwrap_or("".to_owned());
                 match part0 {
                     ref x if x == "user-agent" => {
                         if state == 2 {
@@ -376,7 +376,7 @@ impl RobotFileParser {
         }
         // search for given user agent matches
         // the first match counts
-        let decoded_url = String::from_utf8(percent_decode(url.trim().as_bytes())).unwrap_or("".to_owned());
+        let decoded_url = String::from_utf8(percent_decode(url.trim().as_bytes()).collect()).unwrap_or("".to_owned());
         let url_str = match decoded_url {
             ref u if !u.is_empty() => u.to_owned(),
             _ => "/".to_owned(),

@@ -8,12 +8,12 @@ license = "MIT"
 name = "robotparser"
 readme = "README.md"
 repository = "https://github.com/messense/robotparser-rs"
-version = "0.4.2"
+version = "0.4.3"
 
 [dependencies]
-hyper = "0.8"
+hyper = "0.9"
 time = "0.1"
-url = "0.5"
+url = "1.0"
 
 [dependencies.clippy]
 optional = true
