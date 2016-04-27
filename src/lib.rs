@@ -39,6 +39,7 @@ extern crate hyper;
 
 use std::io::Read;
 use std::cell::{Cell, RefCell};
+use std::borrow::Cow;
 use url::Url;
 use hyper::{Client};
 use hyper::status::StatusCode;
@@ -47,25 +48,25 @@ use std::time::Duration;
 /// A rule line is a single "Allow:" (allowance==True) or "Disallow:"
 /// (allowance==False) followed by a path."""
 #[derive(Debug, Eq, PartialEq, Clone)]
-struct RuleLine {
-    path: String,
+struct RuleLine<'a> {
+    path: Cow<'a, str>,
     allowance: bool,
 }
 
 /// An entry has one or more user-agents and zero or more rulelines
 #[derive(Debug, Eq, PartialEq, Clone)]
-struct Entry {
+struct Entry<'a> {
     useragents: RefCell<Vec<String>>,
-    rulelines: RefCell<Vec<RuleLine>>,
+    rulelines: RefCell<Vec<RuleLine<'a>>>,
     crawl_delay: Option<Duration>,
     sitemaps: Vec<Url>,
 }
 
 /// robots.txt file parser
 #[derive(Debug, Eq, PartialEq, Clone)]
-pub struct RobotFileParser {
-    entries: RefCell<Vec<Entry>>,
-    default_entry: RefCell<Entry>,
+pub struct RobotFileParser<'a> {
+    entries: RefCell<Vec<Entry<'a>>>,
+    default_entry: RefCell<Entry<'a>>,
     disallow_all: Cell<bool>,
     allow_all: Cell<bool>,
     url: Url,
@@ -75,27 +76,30 @@ pub struct RobotFileParser {
 }
 
 
-impl RuleLine {
-    fn new(path: &str, allowance: bool) -> RuleLine {
+impl<'a> RuleLine<'a> {
+    fn new<S>(path: S, allowance: bool) -> RuleLine<'a>
+        where S: Into<Cow<'a, str>>
+    {
+        let path = path.into();
         let mut allow = allowance;
         if path == "" && !allowance {
             // an empty value means allow all
             allow = true;
         }
         RuleLine {
-            path: path.to_owned(),
+            path: path,
             allowance: allow,
         }
     }
 
     fn applies_to(&self, filename: &str) -> bool {
-        &self.path == "*" || filename.starts_with(&self.path)
+        self.path == "*" || filename.starts_with(&self.path[..])
     }
 }
 
 
-impl Entry {
-    fn new() -> Entry {
+impl<'a> Entry<'a> {
+    fn new() -> Entry<'a> {
         Entry {
             useragents: RefCell::new(vec![]),
             rulelines: RefCell::new(vec![]),
@@ -138,7 +142,7 @@ impl Entry {
         useragents.push(useragent.to_lowercase().to_owned());
     }
 
-    fn push_ruleline(&self, ruleline: RuleLine) {
+    fn push_ruleline(&self, ruleline: RuleLine<'a>) {
         let mut rulelines = self.rulelines.borrow_mut();
         rulelines.push(ruleline);
     }
@@ -154,7 +158,7 @@ impl Entry {
         useragents.is_empty() && rulelines.is_empty()
     }
 
-    fn set_crawl_delay(&mut self,delay: Duration) {
+    fn set_crawl_delay(&mut self, delay: Duration) {
         self.crawl_delay = Some(delay);
     }
 
@@ -174,15 +178,15 @@ impl Entry {
 }
 
 
-impl Default for Entry {
-    fn default() -> Entry {
+impl<'a> Default for Entry<'a> {
+    fn default() -> Entry<'a> {
         Entry::new()
     }
 }
 
 
-impl RobotFileParser {
-    pub fn new<T: AsRef<str>>(url: T) -> RobotFileParser {
+impl<'a> RobotFileParser<'a> {
+    pub fn new<T: AsRef<str>>(url: T) -> RobotFileParser<'a> {
         let parsed_url = Url::parse(url.as_ref()).unwrap();
         RobotFileParser {
             entries: RefCell::new(vec![]),
@@ -247,7 +251,7 @@ impl RobotFileParser {
         }
     }
 
-    fn _add_entry(&self, entry: Entry) {
+    fn _add_entry(&self, entry: Entry<'a>) {
         if entry.has_useragent("*") {
             // the default entry is considered last
             let mut default_entry = self.default_entry.borrow_mut();
@@ -317,13 +321,13 @@ impl RobotFileParser {
                     },
                     ref x if x == "disallow" => {
                         if state != 0 {
-                            entry.push_ruleline(RuleLine::new(&part1, false));
+                            entry.push_ruleline(RuleLine::new(part1, false));
                             state = 2;
                         }
                     },
                     ref x if x == "allow" => {
                         if state != 0 {
-                            entry.push_ruleline(RuleLine::new(&part1, true));
+                            entry.push_ruleline(RuleLine::new(part1, true));
                             state = 2;
                         }
                     },
