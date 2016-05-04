@@ -42,8 +42,11 @@ use std::cell::{Cell, RefCell};
 use std::borrow::Cow;
 use url::Url;
 use hyper::{Client};
+use hyper::header::{UserAgent};
 use hyper::status::StatusCode;
 use std::time::Duration;
+
+const USER_AGENT: &'static str = "robotparser-rs (https://crates.io/crates/robotparser)";
 
 /// A rule line is a single "Allow:" (allowance==True) or "Disallow:"
 /// (allowance==False) followed by a path."""
@@ -228,7 +231,9 @@ impl<'a> RobotFileParser<'a> {
     /// Reads the robots.txt URL and feeds it to the parser.
     pub fn read(&self) {
         let client = Client::new();
-        let mut res = match client.get(self.url.clone()).send() {
+        let request = client.get(self.url.clone())
+            .header(UserAgent(USER_AGENT.to_owned()));
+        let mut res = match request.send() {
             Ok(res) => res,
             Err(_) => {
                 return;
