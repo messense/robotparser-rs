@@ -34,7 +34,6 @@
 #![cfg_attr(feature="clippy", warn(cyclomatic_complexity))]
 
 extern crate url;
-extern crate time;
 extern crate hyper;
 
 use std::io::Read;
@@ -44,7 +43,7 @@ use url::Url;
 use hyper::{Client};
 use hyper::header::{UserAgent};
 use hyper::status::StatusCode;
-use std::time::Duration;
+use std::time::{Duration, SystemTime, UNIX_EPOCH};
 
 const USER_AGENT: &'static str = "robotparser-rs (https://crates.io/crates/robotparser)";
 
@@ -214,9 +213,8 @@ impl<'a> RobotFileParser<'a> {
     /// Sets the time the robots.txt file was last fetched to the
     /// current time.
     pub fn modified(&self) {
-        use time::get_time;
-
-        self.last_checked.set(get_time().sec);
+        let now = SystemTime::now().duration_since(UNIX_EPOCH).unwrap().as_secs() as i64;
+        self.last_checked.set(now);
     }
 
     /// Sets the URL referring to a robots.txt file.
