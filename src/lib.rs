@@ -1,4 +1,3 @@
-//!
 //! robots.txt parser for Rust
 //!
 //! The robots.txt Exclusion Protocol is implemented as specified in
@@ -40,8 +39,8 @@ use std::io::Read;
 use std::cell::{Cell, RefCell};
 use std::borrow::Cow;
 use url::Url;
-use hyper::{Client};
-use hyper::header::{UserAgent};
+use hyper::Client;
+use hyper::header::UserAgent;
 use hyper::status::StatusCode;
 use std::time::{Duration, SystemTime, UNIX_EPOCH};
 
@@ -125,7 +124,7 @@ impl<'a> Entry<'a> {
         false
     }
 
-    
+
     /// Preconditions:
     /// - our agent applies to this entry
     /// - filename is URL decoded
@@ -133,7 +132,7 @@ impl<'a> Entry<'a> {
         let rulelines = self.rulelines.borrow();
         for line in &*rulelines {
             if line.applies_to(filename) {
-                return line.allowance
+                return line.allowance;
             }
         }
         true
@@ -168,7 +167,7 @@ impl<'a> Entry<'a> {
         self.crawl_delay
     }
 
-    fn add_sitemap(&mut self,url:&str) {
+    fn add_sitemap(&mut self, url: &str) {
         if let Ok(url) = Url::parse(url) {
             self.sitemaps.push(url);
         }
@@ -240,17 +239,17 @@ impl<'a> RobotFileParser<'a> {
         match res.status {
             StatusCode::Unauthorized | StatusCode::Forbidden => {
                 self.disallow_all.set(true);
-            },
+            }
             status if status >= StatusCode::BadRequest && status < StatusCode::InternalServerError => {
                 self.allow_all.set(true);
-            },
+            }
             StatusCode::Ok => {
                 let mut buf = String::new();
                 res.read_to_string(&mut buf).unwrap();
                 let lines: Vec<&str> = buf.split('\n').collect();
                 self.parse(&lines);
-            },
-            _ => {},
+            }
+            _ => {}
         }
     }
 
@@ -292,13 +291,13 @@ impl<'a> RobotFileParser<'a> {
                     1 => {
                         entry = Entry::new();
                         state = 0;
-                    },
+                    }
                     2 => {
                         self._add_entry(entry);
                         entry = Entry::new();
                         state = 0;
-                    },
-                    _ => {},
+                    }
+                    _ => {}
                 }
             }
             // remove optional comment and strip line
@@ -312,7 +311,8 @@ impl<'a> RobotFileParser<'a> {
             let parts: Vec<&str> = ln.splitn(2, ':').collect();
             if parts.len() == 2 {
                 let part0 = parts[0].trim().to_lowercase();
-                let part1 = String::from_utf8(percent_decode(parts[1].trim().as_bytes()).collect()).unwrap_or("".to_owned());
+                let part1 = String::from_utf8(percent_decode(parts[1].trim().as_bytes()).collect())
+                    .unwrap_or("".to_owned());
                 match part0 {
                     ref x if x == "user-agent" => {
                         if state == 2 {
@@ -321,37 +321,37 @@ impl<'a> RobotFileParser<'a> {
                         }
                         entry.push_useragent(&part1);
                         state = 1;
-                    },
+                    }
                     ref x if x == "disallow" => {
                         if state != 0 {
                             entry.push_ruleline(RuleLine::new(part1, false));
                             state = 2;
                         }
-                    },
+                    }
                     ref x if x == "allow" => {
                         if state != 0 {
                             entry.push_ruleline(RuleLine::new(part1, true));
                             state = 2;
                         }
-                    },
+                    }
                     ref x if x == "crawl-delay" => {
                         if state != 0 {
                             if let Ok(delay) = part1.parse::<f64>() {
                                 let delay_seconds = delay.trunc();
                                 let delay_nanoseconds = delay.fract() * 10f64.powi(9);
-                                let delay = Duration::new(delay_seconds as u64,delay_nanoseconds as u32);
+                                let delay = Duration::new(delay_seconds as u64, delay_nanoseconds as u32);
                                 entry.set_crawl_delay(delay);
                             }
                             state = 2;
-                        }  
-                    },
+                        }
+                    }
                     ref x if x == "sitemap" => {
                         if state != 0 {
                             entry.add_sitemap(&part1);
                             state = 2;
                         }
                     }
-                    _ => {},
+                    _ => {}
                 }
             }
         }
@@ -403,8 +403,8 @@ impl<'a> RobotFileParser<'a> {
     }
 
     /// Returns the crawl delay for this user agent as a `Duration`, or None if no crawl delay is defined.
-    pub fn get_crawl_delay<T: AsRef<str>>(&self,useragent: T) -> Option<Duration> {
-        let useragent = useragent.as_ref();        
+    pub fn get_crawl_delay<T: AsRef<str>>(&self, useragent: T) -> Option<Duration> {
+        let useragent = useragent.as_ref();
         if self.last_checked.get() == 0 {
             return None;
         }
@@ -418,8 +418,8 @@ impl<'a> RobotFileParser<'a> {
     }
 
     /// Returns the sitemaps for this user agent as a `Vec<Url>`.
-    pub fn get_sitemaps<T: AsRef<str>>(&self,useragent: T) -> Vec<Url> {
-        let useragent = useragent.as_ref();        
+    pub fn get_sitemaps<T: AsRef<str>>(&self, useragent: T) -> Vec<Url> {
+        let useragent = useragent.as_ref();
         if self.last_checked.get() == 0 {
             return Vec::new();
         }
