@@ -246,7 +246,24 @@ fn test_robots_text_sitemaps() {
             Url::parse("http://example.com/sitemap1.xml").unwrap(),
             Url::parse("http://example.com/sitemap2.xml").unwrap(),
             Url::parse("http://example.com/sitemap3.xml").unwrap()
-        ], 
+        ],
         parser.get_sitemaps("Yandex")
     );
+}
+
+#[test]
+fn test_robots_text_request_rate() {
+    let parser = RobotFileParser::new("http://www.python.org/robots.txt");
+    let doc =
+        "User-agent: Yandex\n\
+        Request-rate: 3/15\n\
+        Disallow: /search/\n";
+    let lines: Vec<&str> = doc.split("\n").collect();
+    parser.parse(&lines);
+    let req_rate = parser.get_req_rate("Yandex").unwrap();
+    assert_eq!(3, req_rate.requests);
+    assert_eq!(15, req_rate.seconds);
+
+    let req_rate = parser.get_req_rate("Google");
+    assert!(req_rate.is_none());
 }

@@ -38,11 +38,12 @@ extern crate hyper;
 use std::io::Read;
 use std::cell::{Cell, RefCell};
 use std::borrow::Cow;
+use std::time::{Duration, SystemTime, UNIX_EPOCH};
+
 use url::Url;
 use hyper::Client;
 use hyper::header::UserAgent;
 use hyper::status::StatusCode;
-use std::time::{Duration, SystemTime, UNIX_EPOCH};
 
 const USER_AGENT: &'static str = "robotparser-rs (https://crates.io/crates/robotparser)";
 
@@ -54,6 +55,12 @@ struct RuleLine<'a> {
     allowance: bool,
 }
 
+#[derive(Debug, Eq, PartialEq, Clone)]
+pub struct RequestRate {
+    pub requests: usize,
+    pub seconds: usize,
+}
+
 /// An entry has one or more user-agents and zero or more rulelines
 #[derive(Debug, Eq, PartialEq, Clone)]
 struct Entry<'a> {
@@ -61,6 +68,7 @@ struct Entry<'a> {
     rulelines: RefCell<Vec<RuleLine<'a>>>,
     crawl_delay: Option<Duration>,
     sitemaps: Vec<Url>,
+    req_rate: Option<RequestRate>,
 }
 
 /// robots.txt file parser
@@ -106,6 +114,7 @@ impl<'a> Entry<'a> {
             rulelines: RefCell::new(vec![]),
             crawl_delay: None,
             sitemaps: Vec::new(),
+            req_rate: None,
         }
     }
 
@@ -175,6 +184,14 @@ impl<'a> Entry<'a> {
 
     fn get_sitemaps(&self) -> Vec<Url> {
         self.sitemaps.clone()
+    }
+
+    fn set_req_rate(&mut self, req_rate: RequestRate) {
+        self.req_rate = Some(req_rate);
+    }
+
+    fn get_req_rate(&self) -> Option<RequestRate> {
+        self.req_rate.clone()
     }
 }
 
@@ -351,6 +368,19 @@ impl<'a> RobotFileParser<'a> {
                             state = 2;
                         }
                     }
+                    ref x if x == "request-rate" => {
+                        if state != 0 {
+                            let numbers: Vec<Result<usize, _>> = part1.split('/').map(|x| x.parse::<usize>()).collect();
+                            if numbers.len() == 2 && numbers[0].is_ok() && numbers[1].is_ok() {
+                                let req_rate = RequestRate {
+                                    requests: numbers[0].clone().unwrap(),
+                                    seconds: numbers[1].clone().unwrap(),
+                                };
+                                entry.set_req_rate(req_rate);
+                            }
+                            state = 2;
+                        }
+                    }
                     _ => {}
                 }
             }
@@ -430,5 +460,20 @@ impl<'a> RobotFileParser<'a> {
             }
         }
         vec![]
+    }
+
+    /// Returns the request rate for this user agent as a `RequestRate`, or None if not request rate is defined
+    pub fn get_req_rate<T: AsRef<str>>(&self, useragent: T) -> Option<RequestRate> {
+        let useragent = useragent.as_ref();
+        if self.last_checked.get() == 0 {
+            return None;
+        }
+        let entries = self.entries.borrow();
+        for entry in &*entries {
+            if entry.applies_to(useragent) {
+                return entry.get_req_rate();
+            }
+        }
+        None
     }
 }
