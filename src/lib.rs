@@ -44,6 +44,7 @@ use url::Url;
 use hyper::Client;
 use hyper::header::UserAgent;
 use hyper::status::StatusCode;
+use hyper::client::Response;
 
 const USER_AGENT: &'static str = "robotparser-rs (https://crates.io/crates/robotparser)";
 
@@ -247,7 +248,7 @@ impl<'a> RobotFileParser<'a> {
         let client = Client::new();
         let request = client.get(self.url.clone())
             .header(UserAgent(USER_AGENT.to_owned()));
-        let mut res = match request.send() {
+        let res = match request.send() {
             Ok(res) => res,
             Err(_) => {
                 return;
@@ -260,14 +261,17 @@ impl<'a> RobotFileParser<'a> {
             status if status >= StatusCode::BadRequest && status < StatusCode::InternalServerError => {
                 self.allow_all.set(true);
             }
-            StatusCode::Ok => {
-                let mut buf = String::new();
-                res.read_to_string(&mut buf).unwrap();
-                let lines: Vec<&str> = buf.split('\n').collect();
-                self.parse(&lines);
-            }
+            StatusCode::Ok => self.from_response(res),
             _ => {}
         }
+    }
+
+    /// Reads the HTTP response and feeds it to the parser.
+    pub fn from_response(&self, mut response: Response) {
+        let mut buf = String::new();
+        response.read_to_string(&mut buf).unwrap();
+        let lines: Vec<&str> = buf.split('\n').collect();
+        self.parse(&lines);
     }
 
     fn _add_entry(&self, entry: Entry<'a>) {
