@@ -248,7 +248,7 @@ impl<'a> RobotFileParser<'a> {
         let client = Client::new();
         let request = client.get(self.url.clone())
             .header(UserAgent(USER_AGENT.to_owned()));
-        let res = match request.send() {
+        let mut res = match request.send() {
             Ok(res) => res,
             Err(_) => {
                 return;
@@ -261,13 +261,13 @@ impl<'a> RobotFileParser<'a> {
             status if status >= StatusCode::BadRequest && status < StatusCode::InternalServerError => {
                 self.allow_all.set(true);
             }
-            StatusCode::Ok => self.from_response(res),
+            StatusCode::Ok => self.from_response(&mut res),
             _ => {}
         }
     }
 
     /// Reads the HTTP response and feeds it to the parser.
-    pub fn from_response(&self, mut response: Response) {
+    pub fn from_response(&self, response: &mut Response) {
         let mut buf = String::new();
         response.read_to_string(&mut buf).unwrap();
         let lines: Vec<&str> = buf.split('\n').collect();
