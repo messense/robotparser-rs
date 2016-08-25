@@ -9,7 +9,7 @@
 //!
 //! ```toml
 //! [dependencies]
-//! robotparser = "0.4"
+//! robotparser = "0.6"
 //! ```
 //!
 //! Add ``extern crate robotparser`` to your crate root and your're good to go!
