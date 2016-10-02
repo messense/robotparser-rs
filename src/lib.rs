@@ -16,7 +16,7 @@
 //!
 //! # Examples
 //!
-//! ```
+//! ```ignore
 //! extern crate robotparser;
 //!
 //! use robotparser::RobotFileParser;
@@ -33,19 +33,27 @@
 #![cfg_attr(feature="clippy", warn(cyclomatic_complexity))]
 
 extern crate url;
+#[cfg(feature = "http")]
 extern crate hyper;
 
+#[cfg(feature = "http")]
 use std::io::Read;
 use std::cell::{Cell, RefCell};
 use std::borrow::Cow;
 use std::time::{Duration, SystemTime, UNIX_EPOCH};
 
 use url::Url;
+
+#[cfg(feature = "http")]
 use hyper::Client;
+#[cfg(feature = "http")]
 use hyper::header::UserAgent;
+#[cfg(feature = "http")]
 use hyper::status::StatusCode;
+#[cfg(feature = "http")]
 use hyper::client::Response;
 
+#[cfg(feature = "http")]
 const USER_AGENT: &'static str = "robotparser-rs (https://crates.io/crates/robotparser)";
 
 /// A rule line is a single "Allow:" (allowance==True) or "Disallow:"
@@ -243,6 +251,7 @@ impl<'a> RobotFileParser<'a> {
         self.last_checked.set(0i64);
     }
 
+    #[cfg(feature = "http")]
     /// Reads the robots.txt URL and feeds it to the parser.
     pub fn read(&self) {
         let client = Client::new();
@@ -266,6 +275,7 @@ impl<'a> RobotFileParser<'a> {
         }
     }
 
+    #[cfg(feature = "http")]
     /// Reads the HTTP response and feeds it to the parser.
     pub fn from_response(&self, response: &mut Response) {
         let mut buf = String::new();
