@@ -213,6 +213,7 @@ fn test_robots_txt_13() {
     robot_test_simple(doc, good, bad);
 }
 
+#[cfg(feature = "http")]
 #[test]
 fn test_robots_txt_read() {
     let parser = RobotFileParser::new("http://www.python.org/robots.txt");
