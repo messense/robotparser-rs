@@ -34,7 +34,7 @@
 
 extern crate url;
 #[cfg(feature = "http")]
-extern crate hyper;
+extern crate reqwest;
 
 #[cfg(feature = "http")]
 use std::io::Read;
@@ -45,13 +45,13 @@ use std::time::{Duration, SystemTime, UNIX_EPOCH};
 use url::Url;
 
 #[cfg(feature = "http")]
-use hyper::Client;
+use reqwest::Client;
 #[cfg(feature = "http")]
-use hyper::header::UserAgent;
+use reqwest::header::UserAgent;
 #[cfg(feature = "http")]
-use hyper::status::StatusCode;
+use reqwest::StatusCode;
 #[cfg(feature = "http")]
-use hyper::client::Response;
+use reqwest::Response;
 
 #[cfg(feature = "http")]
 const USER_AGENT: &'static str = "robotparser-rs (https://crates.io/crates/robotparser)";
@@ -254,7 +254,7 @@ impl<'a> RobotFileParser<'a> {
     #[cfg(feature = "http")]
     /// Reads the robots.txt URL and feeds it to the parser.
     pub fn read(&self) {
-        let client = Client::new();
+        let client = Client::new().expect("client failed to construct");
         let request = client.get(self.url.clone())
             .header(UserAgent(USER_AGENT.to_owned()));
         let mut res = match request.send() {
@@ -263,7 +263,8 @@ impl<'a> RobotFileParser<'a> {
                 return;
             }
         };
-        match res.status {
+        let status = res.status().clone();
+        match status {
             StatusCode::Unauthorized | StatusCode::Forbidden => {
                 self.disallow_all.set(true);
             }
