@@ -8,7 +8,7 @@ license = "MIT"
 name = "robotparser"
 readme = "README.md"
 repository = "https://github.com/messense/robotparser-rs"
-version = "0.8.1"
+version = "0.8.2"
 
 [dependencies]
 url = "1.2"
