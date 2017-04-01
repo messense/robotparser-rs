@@ -16,7 +16,7 @@
 //!
 //! # Examples
 //!
-//! ```ignore
+//! ```rust,ignore
 //! extern crate robotparser;
 //!
 //! use robotparser::RobotFileParser;
