@@ -14,7 +14,7 @@ version = "0.8.2"
 url = "1.2"
 
 [dependencies.reqwest]
-version = "0.5"
+version = "0.7"
 optional = true
 
 [dependencies.clippy]
