@@ -254,8 +254,8 @@ impl<'a> RobotFileParser<'a> {
     #[cfg(feature = "http")]
     /// Reads the robots.txt URL and feeds it to the parser.
     pub fn read(&self) {
-        let client = Client::new().expect("client failed to construct");
-        let mut request = client.get(self.url.clone()).expect("Invalid URL");
+        let client = Client::new();
+        let mut request = client.get(self.url.clone());
         let request = request.header(UserAgent::new(USER_AGENT.to_owned()));
         let mut res = match request.send() {
             Ok(res) => res,
