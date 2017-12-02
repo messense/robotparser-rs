@@ -1,7 +1,7 @@
 //! robots.txt parser for Rust
 //!
 //! The robots.txt Exclusion Protocol is implemented as specified in
-//! http://www.robotstxt.org/norobots-rfc.txt
+//! <http://www.robotstxt.org/norobots-rfc.txt>
 //!
 //! # Installation
 //!
@@ -54,7 +54,7 @@ use reqwest::StatusCode;
 use reqwest::Response;
 
 #[cfg(feature = "http")]
-const USER_AGENT: &'static str = "robotparser-rs (https://crates.io/crates/robotparser)";
+const USER_AGENT: &str = "robotparser-rs (https://crates.io/crates/robotparser)";
 
 /// A rule line is a single "Allow:" (allowance==True) or "Disallow:"
 /// (allowance==False) followed by a path."""
@@ -263,7 +263,7 @@ impl<'a> RobotFileParser<'a> {
                 return;
             }
         };
-        let status = res.status().clone();
+        let status = res.status();
         match status {
             StatusCode::Unauthorized | StatusCode::Forbidden => {
                 self.disallow_all.set(true);
