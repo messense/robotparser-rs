@@ -221,7 +221,7 @@ impl<'a> RobotFileParser<'a> {
             disallow_all: Cell::new(false),
             allow_all: Cell::new(false),
             url: parsed_url.clone(),
-            host: parsed_url.domain().unwrap().to_owned(),
+            host: parsed_url.host_str().unwrap().to_owned(),
             path: parsed_url.path().to_owned(),
             last_checked: Cell::new(0i64),
         }
@@ -246,7 +246,7 @@ impl<'a> RobotFileParser<'a> {
     pub fn set_url<T: AsRef<str>>(&mut self, url: T) {
         let parsed_url = Url::parse(url.as_ref()).unwrap();
         self.url = parsed_url.clone();
-        self.host = parsed_url.domain().unwrap().to_owned();
+        self.host = parsed_url.host_str().unwrap().to_owned();
         self.path = parsed_url.path().to_owned();
         self.last_checked.set(0i64);
     }
