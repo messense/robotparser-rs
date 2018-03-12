@@ -268,3 +268,9 @@ fn test_robots_text_request_rate() {
     let req_rate = parser.get_req_rate("Google");
     assert!(req_rate.is_none());
 }
+
+#[test]
+fn test_robots_127_0_0_1() {
+    // Ensure it does not panic
+    RobotFileParser::new("http://127.0.0.1:4000/robots.txt");
+}
