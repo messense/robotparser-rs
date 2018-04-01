@@ -4,6 +4,7 @@
 [![Build status](https://ci.appveyor.com/api/projects/status/usb5fo89sxq5txk3/branch/master?svg=true)](https://ci.appveyor.com/project/messense/robotparser-rs/branch/master)
 [![Coverage Status](https://coveralls.io/repos/messense/robotparser-rs/badge.svg)](https://coveralls.io/r/messense/robotparser-rs)
 [![Crates.io](https://img.shields.io/crates/v/robotparser.svg)](https://crates.io/crates/robotparser)
+[![Dependency status](https://deps.rs/repo/github/messense/robotparser-rs/status.svg)](https://deps.rs/repo/github/messense/robotparser-rs)
 
 robots.txt parser for Rust.
 
