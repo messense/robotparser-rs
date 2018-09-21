@@ -47,14 +47,14 @@ use url::Url;
 #[cfg(feature = "http")]
 use reqwest::Client;
 #[cfg(feature = "http")]
-use reqwest::header::UserAgent;
+use reqwest::header::USER_AGENT;
 #[cfg(feature = "http")]
 use reqwest::StatusCode;
 #[cfg(feature = "http")]
 use reqwest::Response;
 
 #[cfg(feature = "http")]
-const USER_AGENT: &str = "robotparser-rs (https://crates.io/crates/robotparser)";
+const RP_USER_AGENT: &str = "robotparser-rs (https://crates.io/crates/robotparser)";
 
 /// A rule line is a single "Allow:" (allowance==True) or "Disallow:"
 /// (allowance==False) followed by a path."""
@@ -255,8 +255,8 @@ impl<'a> RobotFileParser<'a> {
     /// Reads the robots.txt URL and feeds it to the parser.
     pub fn read(&self) {
         let client = Client::new();
-        let mut request = client.get(self.url.clone());
-        let request = request.header(UserAgent::new(USER_AGENT.to_owned()));
+        let request = client.get(self.url.clone());
+        let request = request.header(USER_AGENT, RP_USER_AGENT.to_owned());
         let mut res = match request.send() {
             Ok(res) => res,
             Err(_) => {
@@ -265,13 +265,13 @@ impl<'a> RobotFileParser<'a> {
         };
         let status = res.status();
         match status {
-            StatusCode::Unauthorized | StatusCode::Forbidden => {
+            StatusCode::UNAUTHORIZED | StatusCode::FORBIDDEN => {
                 self.disallow_all.set(true);
             }
-            status if status >= StatusCode::BadRequest && status < StatusCode::InternalServerError => {
+            status if status >= StatusCode::BAD_REQUEST && status < StatusCode::INTERNAL_SERVER_ERROR => {
                 self.allow_all.set(true);
             }
-            StatusCode::Ok => self.from_response(&mut res),
+            StatusCode::OK => self.from_response(&mut res),
             _ => {}
         }
     }
