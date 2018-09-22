@@ -17,10 +17,6 @@ url = "1"
 version = "0.9"
 optional = true
 
-[dependencies.clippy]
-optional = true
-version = "^0.*"
-
 [features]
 default = ["http"]
 http = ["reqwest"]
