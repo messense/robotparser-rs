@@ -1,0 +1,1 @@
+initSidebarItems({"struct":[["Connected","Extra information about the connected transport."],["Destination","A set of properties to describe where and how to try to connect."],["HttpConnector","A connector for the `http` scheme."]],"trait":[["Connect","Connect to a destination, returning an IO transport."]]});
