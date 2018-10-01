@@ -461,16 +461,17 @@ impl<'a> RobotFileParser<'a> {
     /// Returns the sitemaps for this user agent as a `Vec<Url>`.
     pub fn get_sitemaps<T: AsRef<str>>(&self, useragent: T) -> Vec<Url> {
         let useragent = useragent.as_ref();
+        let ret = Vec::new();
         if self.last_checked.get() == 0 {
-            return Vec::new();
+            return ret;
         }
         let entries = self.entries.borrow();
         for entry in &*entries {
             if entry.applies_to(useragent) {
-                return entry.get_sitemaps();
+                ret.append( entry.get_sitemaps() );
             }
         }
-        vec![]
+        return ret;
     }
 
     /// Returns the request rate for this user agent as a `RequestRate`, or None if not request rate is defined
