@@ -461,14 +461,14 @@ impl<'a> RobotFileParser<'a> {
     /// Returns the sitemaps for this user agent as a `Vec<Url>`.
     pub fn get_sitemaps<T: AsRef<str>>(&self, useragent: T) -> Vec<Url> {
         let useragent = useragent.as_ref();
-        let ret = Vec::new();
+        let mut ret = Vec::new();
         if self.last_checked.get() == 0 {
             return ret;
         }
         let entries = self.entries.borrow();
         for entry in &*entries {
             if entry.applies_to(useragent) {
-                ret.append( entry.get_sitemaps() );
+                ret.append( &mut entry.get_sitemaps( ).clone( ) );
             }
         }
         return ret;
