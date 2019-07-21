@@ -248,7 +248,7 @@ fn test_robots_text_sitemaps() {
             Url::parse("http://example.com/sitemap2.xml").unwrap(),
             Url::parse("http://example.com/sitemap3.xml").unwrap()
         ],
-        parser.get_sitemaps("Yandex")
+        parser.get_sitemaps()
     );
 }
 
