@@ -1,5 +1,5 @@
 use url::Url;
-use url::percent_encoding::percent_decode;
+use percent_encoding::percent_decode;
 
 #[derive(Debug)]
 pub struct Path(String);

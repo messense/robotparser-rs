@@ -1,6 +1,6 @@
 use std::convert::From;
 use std::mem::replace;
-use url::percent_encoding::percent_decode;
+use percent_encoding::percent_decode;
 use crate::model::path::Path;
 
 #[derive(Debug, Clone)]

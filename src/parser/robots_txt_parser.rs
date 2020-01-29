@@ -227,11 +227,48 @@ impl Parser {
             clean_params_path_pattern = PathPattern::all();
             clean_params = parts[0];
         }
-        let clean_params: Vec<String> = clean_params
-            .split('&')
-            .map(String::from)
-            .collect();
-        self.result.add_clean_params(CleanParams::new(clean_params_path_pattern, clean_params));
+        let (valid_clean_params, invalid_clean_params) = Self::parse_clean_params(clean_params);
+        if !invalid_clean_params.is_empty() {
+            self.warnings.push(ParseWarning::ignored_clean_params(line, invalid_clean_params));
+        }
+        self.result.add_clean_params(CleanParams::new(clean_params_path_pattern, valid_clean_params));
+    }
+
+    fn parse_clean_params(clean_params: &str) -> (Vec<String>, Vec<String>) {
+        let mut valid = Vec::new();
+        let mut invalid = Vec::new();
+        for clean_param in clean_params.split('&') {
+            if !clean_param.is_empty() {
+                if Self::is_valid_clean_param(clean_param) {
+                    valid.push(clean_param.into());
+                } else {
+                    invalid.push(clean_param.into());
+                }
+            }
+        }
+        return (valid, invalid);
+    }
+
+    fn is_valid_clean_param(clean_param: &str) -> bool {
+        for c in clean_param.chars() {
+            let mut is_valid = false;
+            if ('A'..'Z').contains(&c) {
+                is_valid = true;
+            }
+            if ('a'..'z').contains(&c) {
+                is_valid = true;
+            }
+            if ('0'..'9').contains(&c) {
+                is_valid = true;
+            }
+            if c == '.' || c == '-' || c == '_' {
+                is_valid = true;
+            }
+            if !is_valid {
+                return false;
+            }
+        }
+        return true;
     }
 }
 

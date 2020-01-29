@@ -3,14 +3,17 @@ use super::warning_reason::WarningReason;
 use url::ParseError as ParseUrlError;
 use std::num::{ParseFloatError, ParseIntError};
 use std::fmt;
+use std::error::Error;
 
-#[derive(Debug)]
+#[derive(Clone, Debug)]
 /// Warning of robots.txt parser about problems when parsing robots.txt file.
 pub struct ParseWarning {
     line_no: usize,
     line: String,
     reason: WarningReason,
 }
+
+impl Error for ParseWarning {}
 
 impl ParseWarning {
     /// Returns the line number in the text of the robots.txt file.
@@ -113,6 +116,14 @@ impl ParseWarning {
             line_no: line.get_line_number(),
             line: line.get_line_text().into(),
             reason: WarningReason::WrongCleanParamFormat,
+        }
+    }
+
+    pub (crate) fn ignored_clean_params(line: &Line, ignored_clean_params: Vec<String>) -> ParseWarning {
+        return ParseWarning {
+            line_no: line.get_line_number(),
+            line: line.get_line_text().into(),
+            reason: WarningReason::IgnoredCleanParams(ignored_clean_params),
         }
     }
 }

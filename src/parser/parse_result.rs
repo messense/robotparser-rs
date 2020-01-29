@@ -10,7 +10,7 @@ pub struct ParseResult<R> where R: Debug {
 
 impl <R>ParseResult<R> where R: Debug {
     /// Creates a new structure for parser results.
-    pub fn new(result: R) -> ParseResult<R>{
+    pub (crate) fn new(result: R) -> ParseResult<R>{
         return ParseResult {
             result,
             warnings: Vec::new(),
@@ -18,7 +18,7 @@ impl <R>ParseResult<R> where R: Debug {
     }
 
     /// Creates a new structure for parser results with warnings.
-    pub fn new_with_warnings(result: R, warnings: Vec<ParseWarning>) -> ParseResult<R>{
+    pub (crate) fn new_with_warnings(result: R, warnings: Vec<ParseWarning>) -> ParseResult<R>{
         return ParseResult {
             result,
             warnings,
@@ -35,8 +35,25 @@ impl <R>ParseResult<R> where R: Debug {
         return self.warnings.as_slice();
     }
 
+    /// Returns reference to result of the robots.txt parser or first warning.
+    pub fn ok_ref(&self) -> Result<&R, &ParseWarning> {
+        if let Some(warning) = self.warnings.first() {
+            return Err(warning);
+        }
+        return Ok(&self.result);
+    }
+
+    /// Returns the result of the robots.txt parser or first warning.
+    pub fn ok(mut self) -> Result<R, ParseWarning> {
+        if self.warnings.is_empty() {
+            return Ok(self.result);
+        }
+        let first_warning = self.warnings.remove(0);
+        return Err(first_warning);
+    }
+
     /// Converts this structure into another type of structure.
-    pub fn map<T>(self, callback: impl Fn(R) -> T) -> ParseResult<T> where T: Debug {
+    pub (crate) fn map<T>(self, callback: impl Fn(R) -> T) -> ParseResult<T> where T: Debug {
         return ParseResult {
             result: (callback)(self.result),
             warnings: self.warnings,

@@ -2,7 +2,7 @@ use url::ParseError as ParseUrlError;
 use std::num::{ParseFloatError, ParseIntError};
 use std::fmt;
 
-#[derive(Debug)]
+#[derive(Clone, Debug)]
 /// Warning reason of robots.txt parser about problems when parsing robots.txt file.
 pub enum WarningReason {
     /// Invalid directive format. Invalid directive example: `:`
@@ -23,8 +23,14 @@ pub enum WarningReason {
     ParseRequestRate(ParseIntError),
     /// Parsing URL error.
     ParseUrl(ParseUrlError),
-    /// Incorrect format of the `Clean-Param` directive. Example of the correct format: `Clean-param: ref /some_dir/get_book.pl`
+    /// Incorrect format of the `Clean-Param` directive.
+    /// Parameters must be matched to regular expression: `A-Za-z0-9.-_`.
+    /// Example of the correct format: `Clean-param: ref1&ref2 /some_dir/get_book.pl`
     WrongCleanParamFormat,
+    /// Some parameters of the `Clean-Param` directive has wrong symbols.
+    /// Parameters must be matched to regular expression: `A-Za-z0-9.-_`.
+    /// Example of the correct format: `Clean-param: ref1&ref2 /some_dir/get_book.pl`
+    IgnoredCleanParams(Vec<String>),
     /// Error in URL path format.
     WrongPathFormat,
 }
@@ -62,6 +68,9 @@ impl fmt::Display for WarningReason {
             },
             &Self::WrongCleanParamFormat => {
                 write!(f, "Incorrect format of the `Clean-Param` directive.")
+            },
+            &Self::IgnoredCleanParams(ref params) => {
+                write!(f, "Directive `Clean-Param` directive has incorrect parameters: {:?}", params)
             },
             &Self::WrongPathFormat => {
                 write!(f, "Error in URL path format.")

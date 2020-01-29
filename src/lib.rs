@@ -18,7 +18,7 @@
 //! ```rust
 //! use robotparser::http::RobotsTxtClient;
 //! use robotparser::service::RobotsTxtService;
-//! use reqwest::Client;
+//! use reqwest::blocking::Client;
 //! use url::Url;
 //!
 //! fn main() {
@@ -38,9 +38,3 @@ pub mod parser;
 pub mod service;
 /// Request builder & response parsers for other http libraries.
 pub mod http;
-
-
-// TODO: 3. Unit tests.
-// TODO: 4. Documentation
-// TODO: 5. Examples
-// TODO: 6. Version & deploy

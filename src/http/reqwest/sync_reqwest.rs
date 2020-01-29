@@ -1,4 +1,5 @@
-use reqwest::{Client, Request, Method, Error};
+use reqwest::blocking::{Client, Request};
+use reqwest::{Method, Error};
 use reqwest::header::HeaderValue;
 use url::{Origin, Url};
 use reqwest::header::USER_AGENT;
@@ -13,9 +14,10 @@ impl RobotsTxtClient for Client {
         let url = Url::parse(&url).expect("Unable to parse robots.txt url");
         let mut request = Request::new(Method::GET, url);
         let _ = request.headers_mut().insert(USER_AGENT, HeaderValue::from_static(DEFAULT_USER_AGENT));
-        let mut response = self.execute(request)?;
+        let response = self.execute(request)?;
+        let status_code = response.status().as_u16();
         let text = response.text()?;
-        let robots_txt = parse_fetched_robots_txt(origin, response.status().as_u16(), &text);
+        let robots_txt = parse_fetched_robots_txt(origin, status_code, &text);
         return Ok(robots_txt);
     }
 }
