@@ -8,16 +8,25 @@ license = "MIT"
 name = "robotparser"
 readme = "README.md"
 repository = "https://github.com/messense/robotparser-rs"
-version = "0.10.2"
+version = "0.11.0"
+edition = "2018"
 
 [dependencies]
-url = "1"
+url = "2"
+percent-encoding = "2.1"
 
 [dependencies.reqwest]
-version = "0.9"
+version = "0.10.1"
+optional = true
+features = ["blocking"]
+
+[dependencies.futures]
+version = "0.3"
 optional = true
 
 [features]
-default = ["http"]
-http = ["reqwest"]
+default = ["reqwest", "futures"]
 unstable = []
+
+[dev-dependencies]
+tokio = "0.2.11"

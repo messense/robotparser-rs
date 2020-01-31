@@ -15,7 +15,7 @@ Add it to your ``Cargo.toml``:
 
 ```toml
 [dependencies]
-robotparser = "0.10"
+robotparser = "0.11"
 ```
 
 Add ``extern crate robotparser`` to your crate root and your're good to go!
@@ -24,14 +24,17 @@ Add ``extern crate robotparser`` to your crate root and your're good to go!
 ## Examples
 
 ```rust
-extern crate robotparser;
-
-use robotparser::RobotFileParser;
+use robotparser::http::RobotsTxtClient;
+use robotparser::service::RobotsTxtService;
+use reqwest::Client;
+use url::Url;
 
 fn main() {
-    let parser = RobotFileParser::new("http://www.python.org/robots.txt");
-    parser.read();
-    assert!(parser.can_fetch("*", "http://www.python.org/robots.txt"));
+    let client = Client::new();
+    let robots_txt_url = Url::parse("http://www.python.org/robots.txt").unwrap();
+    let robots_txt = client.fetch_robots_txt(robots_txt_url.origin()).unwrap().get_result();
+    let fetch_url = Url::parse("http://www.python.org/robots.txt").unwrap();
+    assert!(robots_txt.can_fetch("*", &fetch_url));
 }
 ```
 
