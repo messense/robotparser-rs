@@ -16,13 +16,13 @@
 //! use url::Url;
 //!
 //! fn main() {
-//!     let robots_txt_url = Url::parse("http://google.com/robots.txt").unwrap();
+//!     let robots_txt_url = Url::parse("https://google.com/robots.txt").unwrap();
 //!     let robots_txt = "User-agent: *\nDisallow: /search";
 //!     let robots_txt = parse_robots_txt(robots_txt_url.origin(), robots_txt);
 //!     assert_eq!(robots_txt.get_warnings().len(), 0);
 //!     let robots_txt = robots_txt.get_result();
-//!     let good_url = Url::parse("http://google.com/test").unwrap();
-//!     let bad_url = Url::parse("http://google.com/search/vvv").unwrap();
+//!     let good_url = Url::parse("https://google.com/test").unwrap();
+//!     let bad_url = Url::parse("https://google.com/search/vvv").unwrap();
 //!     assert_eq!(robots_txt.can_fetch("*", &bad_url), false);
 //!     assert_eq!(robots_txt.can_fetch("*", &good_url), true);
 //! }

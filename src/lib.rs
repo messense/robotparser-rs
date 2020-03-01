@@ -1,7 +1,7 @@
 //! robots.txt parser for Rust
 //!
 //! The robots.txt Exclusion Protocol is implemented as specified in
-//! <http://www.robotstxt.org/norobots-rfc.txt>
+//! <https://www.robotstxt.org/norobots-rfc.txt>
 //!
 //! # Installation
 //!
@@ -23,9 +23,9 @@
 //!
 //! fn main() {
 //!     let client = Client::new();
-//!     let robots_txt_url = Url::parse("http://www.python.org/robots.txt").unwrap();
+//!     let robots_txt_url = Url::parse("https://www.python.org/robots.txt").unwrap();
 //!     let robots_txt = client.fetch_robots_txt(robots_txt_url.origin()).unwrap().get_result();
-//!     let fetch_url = Url::parse("http://www.python.org/robots.txt").unwrap();
+//!     let fetch_url = Url::parse("https://www.python.org/robots.txt").unwrap();
 //!     assert!(robots_txt.can_fetch("*", &fetch_url));
 //! }
 //! ```
