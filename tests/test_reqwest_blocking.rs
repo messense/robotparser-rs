@@ -16,10 +16,12 @@ fn test_reqwest_blocking() {
 }
 
 #[test]
-#[should_panic]
 fn test_reqwest_blocking_panic_url() {
     let client = Client::new();
     let host = Host::Domain("python.org::".into());
     let origin = Origin::Tuple("https".into(), host, 80);
-    client.fetch_robots_txt(origin).unwrap().get_result();
+    match client.fetch_robots_txt(origin) {
+        Ok(_) => assert!(false),
+        Err(_) => assert!(true)
+    }
 }
