@@ -106,7 +106,7 @@ fn test_warning_request_rate() {
 
 #[test]
 fn test_warning_parsing_url() {
-    let input = "User-Agent: *\nSitemap: http://python.org/sitemap.xml";
+    let input = "User-Agent: *\nSitemap: https://python.org/sitemap.xml";
     validate_warnings(input, &[]);
     let input = "User-Agent: *\nSitemap: http$$$://python.org/sitemap.xml";
     validate_warnings(input, &[WarningReasonKind::ParseUrl]);

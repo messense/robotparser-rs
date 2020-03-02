@@ -6,15 +6,15 @@ use url::Url;
 const AGENT: &'static str = "test_robotparser";
 
 fn robot_test(doc: &str, good_urls: Vec<&str>, bad_urls: Vec<&str>, agent: &str) {
-    let url = Url::parse("http://www.baidu.com/robots.txt").unwrap();
+    let url = Url::parse("https://www.baidu.com/robots.txt").unwrap();
     let parser = parse_robots_txt(url.origin(), doc).get_result();
     for url in &good_urls {
-        let url = format!("http://www.baidu.com{}", url);
+        let url = format!("https://www.baidu.com{}", url);
         let url = Url::parse(&url).unwrap();
         assert!(parser.can_fetch(agent, &url));
     }
     for url in &bad_urls {
-        let url = format!("http://www.baidu.com{}", url);
+        let url = format!("https://www.baidu.com{}", url);
         let url = Url::parse(&url).unwrap();
         assert!(!parser.can_fetch(agent, &url));
     }
@@ -56,7 +56,7 @@ fn test_robots_txt_1() {
 #[test]
 fn test_robots_txt_2() {
     let doc = "\n\
-    # robots.txt for http://www.example.com/\n\
+    # robots.txt for https://www.example.com/\n\
     \n\
     User-agent: *\n\
     Disallow: /cyberworld/map/ # This is an infinite virtual URL space\n\
@@ -249,7 +249,7 @@ fn test_robots_txt_read() {
     use robotparser::http::{CreateRobotsTxtRequest, ParseRobotsTxtResponse};
     use reqwest::{Client, Request};
     let http_client = Client::new();
-    let url = Url::parse("http://www.python.org/robots.txt").unwrap();
+    let url = Url::parse("https://www.python.org/robots.txt").unwrap();
     let request = Request::create_robots_txt_request(url.origin());
     let mut response = http_client.execute(request).unwrap();
     let parser = response.parse_robots_txt_response().unwrap().get_result();
@@ -258,7 +258,7 @@ fn test_robots_txt_read() {
 
 #[test]
 fn test_robots_text_crawl_delay() {
-    let robots_txt_url = Url::parse("http://www.python.org/robots.txt").unwrap();
+    let robots_txt_url = Url::parse("https://www.python.org/robots.txt").unwrap();
     let doc = "User-agent: Yandex\n\
     Crawl-delay: 2.35\n\
     Disallow: /search/\n";
@@ -268,18 +268,18 @@ fn test_robots_text_crawl_delay() {
 
 #[test]
 fn test_robots_text_sitemaps() {
-    let robots_txt_url = Url::parse("http://www.python.org/robots.txt").unwrap();
+    let robots_txt_url = Url::parse("https://www.python.org/robots.txt").unwrap();
     let doc = "User-agent: Yandex\n\
-    Sitemap    \t  :  http://example.com/sitemap1.xml\n
-    Sitemap:  http://example.com/sitemap2.xml\n
-    Sitemap:  http://example.com/sitemap3.xml\n
+    Sitemap    \t  :  https://example.com/sitemap1.xml\n
+    Sitemap:  https://example.com/sitemap2.xml\n
+    Sitemap:  https://example.com/sitemap3.xml\n
     Disallow: /search/\n";
     let parser = parse_robots_txt(robots_txt_url.origin(), doc).get_result();
     assert_eq!(
         &[
-            Url::parse("http://example.com/sitemap1.xml").unwrap(),
-            Url::parse("http://example.com/sitemap2.xml").unwrap(),
-            Url::parse("http://example.com/sitemap3.xml").unwrap()
+            Url::parse("https://example.com/sitemap1.xml").unwrap(),
+            Url::parse("https://example.com/sitemap2.xml").unwrap(),
+            Url::parse("https://example.com/sitemap3.xml").unwrap()
         ],
         parser.get_sitemaps()
     );
@@ -287,7 +287,7 @@ fn test_robots_text_sitemaps() {
 
 #[test]
 fn test_robots_text_request_rate() {
-    let robots_txt_url = Url::parse("http://www.python.org/robots.txt").unwrap();
+    let robots_txt_url = Url::parse("https://www.python.org/robots.txt").unwrap();
     let doc =
         "User-agent: Yandex\n\
         Request-rate: 3/15\n\
@@ -313,15 +313,15 @@ Clean-param: gid\n\
 Clean-param: tm\n\
 Clean-param: amp\n\
     ";
-    let url = Url::parse("http://www.baidu.com/robots.txt").unwrap();
+    let url = Url::parse("https://www.baidu.com/robots.txt").unwrap();
     let parser = parse_robots_txt(url.origin(), doc).get_result();
-    let mut site_url = Url::parse("http://www.baidu.com/test?post_id=7777&mode=99&from=google&pid=99&gid=88&tm=777&amp=1").unwrap();
+    let mut site_url = Url::parse("https://www.baidu.com/test?post_id=7777&mode=99&from=google&pid=99&gid=88&tm=777&amp=1").unwrap();
     let was_updated = parser.normalize_url(&mut site_url);
     assert_eq!(was_updated, true);
-    assert_eq!(site_url.as_str(), "http://www.baidu.com/test?post_id=7777");
+    assert_eq!(site_url.as_str(), "https://www.baidu.com/test?post_id=7777");
 
-    let mut site_url = Url::parse("http://www.google.com/test?post_id=7777&mode=99&from=google&pid=99&gid=88&tm=777&amp=1").unwrap();
+    let mut site_url = Url::parse("https://www.google.com/test?post_id=7777&mode=99&from=google&pid=99&gid=88&tm=777&amp=1").unwrap();
     let was_updated = parser.normalize_url(&mut site_url);
     assert_eq!(was_updated, false);
-    assert_eq!(site_url.as_str(), "http://www.google.com/test?post_id=7777&mode=99&from=google&pid=99&gid=88&tm=777&amp=1");
+    assert_eq!(site_url.as_str(), "https://www.google.com/test?post_id=7777&mode=99&from=google&pid=99&gid=88&tm=777&amp=1");
 }
