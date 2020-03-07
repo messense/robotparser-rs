@@ -15,9 +15,9 @@ impl RobotsTxtClient for Client {
         let url = Url::parse(&url).map_err(|err| RobotparserError {kind: ErrorKind::Url(err)})?;
         let mut request = Request::new(Method::GET, url);
         let _ = request.headers_mut().insert(USER_AGENT, HeaderValue::from_static(DEFAULT_USER_AGENT));
-        let response = self.execute(request).map_err(|err| RobotparserError {kind: ErrorKind::HttpClient(err)})?;
+        let response = self.execute(request).map_err(|err| RobotparserError {kind: ErrorKind::Http(err)})?;
         let status_code = response.status().as_u16();
-        let text = response.text().map_err(|err| RobotparserError {kind: ErrorKind::HttpClient(err)})?;
+        let text = response.text().map_err(|err| RobotparserError {kind: ErrorKind::Http(err)})?;
         let robots_txt = parse_fetched_robots_txt(origin, status_code, &text);
         return Ok(robots_txt);
     }
