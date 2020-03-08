@@ -16,4 +16,4 @@ pub use self::robots_txt::RobotsTxt;
 mod path;
 pub (crate) use self::path::Path;
 mod errors;
-pub use self::errors::{RobotparserError, ErrorKind};
+pub use self::errors::{Error, ErrorKind};

@@ -1,7 +1,7 @@
 use std::fmt;
 
 #[derive(Debug)]
-pub struct RobotparserError {
+pub struct Error {
     pub kind: ErrorKind,
 }
 
@@ -11,7 +11,7 @@ pub enum ErrorKind {
     Http(reqwest::Error),
 }
 
-impl fmt::Display for RobotparserError {
+impl fmt::Display for Error {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         match self.kind {
             ErrorKind::Url(ref err) => err.fmt(f),
@@ -19,3 +19,5 @@ impl fmt::Display for RobotparserError {
         }
     }
 }
+
+impl std::error::Error for Error {}
