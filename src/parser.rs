@@ -15,17 +15,15 @@
 //! use robotparser::service::RobotsTxtService;
 //! use url::Url;
 //!
-//! fn main() {
-//!     let robots_txt_url = Url::parse("https://google.com/robots.txt").unwrap();
-//!     let robots_txt = "User-agent: *\nDisallow: /search";
-//!     let robots_txt = parse_robots_txt(robots_txt_url.origin(), robots_txt);
-//!     assert_eq!(robots_txt.get_warnings().len(), 0);
-//!     let robots_txt = robots_txt.get_result();
-//!     let good_url = Url::parse("https://google.com/test").unwrap();
-//!     let bad_url = Url::parse("https://google.com/search/vvv").unwrap();
-//!     assert_eq!(robots_txt.can_fetch("*", &bad_url), false);
-//!     assert_eq!(robots_txt.can_fetch("*", &good_url), true);
-//! }
+//! let robots_txt_url = Url::parse("https://google.com/robots.txt").unwrap();
+//! let robots_txt = "User-agent: *\nDisallow: /search";
+//! let robots_txt = parse_robots_txt(robots_txt_url.origin(), robots_txt);
+//! assert_eq!(robots_txt.get_warnings().len(), 0);
+//! let robots_txt = robots_txt.get_result();
+//! let good_url = Url::parse("https://google.com/test").unwrap();
+//! let bad_url = Url::parse("https://google.com/search/vvv").unwrap();
+//! assert_eq!(robots_txt.can_fetch("*", &bad_url), false);
+//! assert_eq!(robots_txt.can_fetch("*", &good_url), true);
 //! ```
 mod robots_txt_parser;
 pub use self::robots_txt_parser::parse as parse_robots_txt;
