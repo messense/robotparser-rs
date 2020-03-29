@@ -23,8 +23,7 @@ fn test_reqwest_blocking_panic_url() {
     let client = Client::new();
     let host = Host::Domain("python.org::".into());
     let origin = Origin::Tuple("https".into(), host, 80);
-    match client.fetch_robots_txt(origin) {
-        Ok(_) => assert!(false),
-        Err(_) => assert!(true),
+    if client.fetch_robots_txt(origin).is_ok() {
+        panic!()
     }
 }
