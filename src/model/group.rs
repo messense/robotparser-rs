@@ -51,12 +51,7 @@ impl Group {
     }
 
     pub(crate) fn contains_user_agent(&self, user_agent: &str) -> bool {
-        self
-            .user_agents
-            .iter()
-            .any(|item| {
-                *item == user_agent
-            })
+        self.user_agents.iter().any(|item| *item == user_agent)
     }
 
     pub(crate) fn set_crawl_delay(&mut self, delay: Duration) {

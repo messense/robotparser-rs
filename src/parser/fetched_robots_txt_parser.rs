@@ -12,16 +12,9 @@ const OK: u16 = 200;
 /// **IMPORTANT NOTE**: origin must point to robots.txt url **before redirects**.
 pub fn parse(origin: Origin, status_code: u16, input: &str) -> ParseResult<FetchedRobotsTxt> {
     match status_code {
-        UNAUTHORIZED | FORBIDDEN => {
-            ParseResult::new(FetchedRobotsTxt::new(FetchedRobotsTxtContainer::FetchDenied))
-        }
-        OK => {
-            parse_robots_txt(origin, input).map(|result| {
-                FetchedRobotsTxt::new(FetchedRobotsTxtContainer::Fetched(result))
-            })
-        }
-        _ => {
-            ParseResult::new(FetchedRobotsTxt::new(FetchedRobotsTxtContainer::FetchFailed))
-        }
+        UNAUTHORIZED | FORBIDDEN => ParseResult::new(FetchedRobotsTxt::new(FetchedRobotsTxtContainer::FetchDenied)),
+        OK => parse_robots_txt(origin, input)
+            .map(|result| FetchedRobotsTxt::new(FetchedRobotsTxtContainer::Fetched(result))),
+        _ => ParseResult::new(FetchedRobotsTxt::new(FetchedRobotsTxtContainer::FetchFailed)),
     }
 }

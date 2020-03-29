@@ -61,9 +61,9 @@ impl Parser {
         if kv_part.is_empty() {
             return Ok(None);
         }
-        let separator_index = kv_part.find(KV_SEPARATOR).ok_or_else(|| {
-            ParseWarning::invalid_directive_format(line)
-        })?;
+        let separator_index = kv_part
+            .find(KV_SEPARATOR)
+            .ok_or_else(|| ParseWarning::invalid_directive_format(line))?;
         if separator_index >= kv_part.len() {
             return Err(ParseWarning::invalid_directive_format(line));
         }

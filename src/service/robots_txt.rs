@@ -28,9 +28,7 @@ impl RobotsTxtService for RobotsTxt {
     }
 
     fn get_crawl_delay(&self, user_agent: &str) -> Option<Duration> {
-        self.find_in_group(user_agent, |group| {
-            group.get_crawl_delay()
-        })
+        self.find_in_group(user_agent, |group| group.get_crawl_delay())
     }
 
     fn normalize_url(&self, url: &mut Url) -> bool {
@@ -54,9 +52,7 @@ impl RobotsTxtService for RobotsTxt {
         }
         let mut pairs: Vec<(String, String)> = url
             .query_pairs()
-            .map(|(key, value)| {
-                (key.into(), value.into())
-            })
+            .map(|(key, value)| (key.into(), value.into()))
             .collect();
         {
             let mut query_pairs_mut = url.query_pairs_mut();
@@ -77,8 +73,6 @@ impl RobotsTxtService for RobotsTxt {
     }
 
     fn get_req_rate(&self, user_agent: &str) -> Option<RequestRate> {
-        self.find_in_group(user_agent, |group| {
-            group.get_req_rate()
-        })
+        self.find_in_group(user_agent, |group| group.get_req_rate())
     }
 }
