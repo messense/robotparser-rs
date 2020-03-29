@@ -35,10 +35,8 @@ impl Parser {
 
     pub fn parse(mut self, input: &str) -> ParseResult<RobotsTxt> {
         let input = ignore_bom(input);
-        let mut line_no = 0;
-        for line in input.lines() {
-            line_no += 1;
-            let line = Line::new(line, line_no);
+        for (line_no, line) in input.lines().enumerate() {
+            let line = Line::new(line, line_no + 1);
             match Self::parse_line(&line) {
                 Ok(Some(line_value)) => {
                     self.process_line_value(&line, &line_value);
