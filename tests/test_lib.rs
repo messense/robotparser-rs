@@ -3,7 +3,7 @@ use robotparser::service::RobotsTxtService;
 use std::time::Duration;
 use url::Url;
 
-const AGENT: &'static str = "test_robotparser";
+const AGENT: &str = "test_robotparser";
 
 fn robot_test(doc: &str, good_urls: Vec<&str>, bad_urls: Vec<&str>, agent: &str) {
     let url = Url::parse("https://www.baidu.com/robots.txt").unwrap();

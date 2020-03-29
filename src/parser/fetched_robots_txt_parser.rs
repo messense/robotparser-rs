@@ -13,15 +13,15 @@ const OK: u16 = 200;
 pub fn parse(origin: Origin, status_code: u16, input: &str) -> ParseResult<FetchedRobotsTxt> {
     match status_code {
         UNAUTHORIZED | FORBIDDEN => {
-            return ParseResult::new(FetchedRobotsTxt::new(FetchedRobotsTxtContainer::FetchDenied));
+            ParseResult::new(FetchedRobotsTxt::new(FetchedRobotsTxtContainer::FetchDenied))
         }
         OK => {
-            return parse_robots_txt(origin, input).map(|result| {
-                return FetchedRobotsTxt::new(FetchedRobotsTxtContainer::Fetched(result));
-            });
+            parse_robots_txt(origin, input).map(|result| {
+                FetchedRobotsTxt::new(FetchedRobotsTxtContainer::Fetched(result))
+            })
         }
         _ => {
-            return ParseResult::new(FetchedRobotsTxt::new(FetchedRobotsTxtContainer::FetchFailed));
+            ParseResult::new(FetchedRobotsTxt::new(FetchedRobotsTxtContainer::FetchFailed))
         }
     }
 }

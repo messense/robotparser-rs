@@ -26,11 +26,11 @@ impl FetchedRobotsTxt {
         }
     }
     pub(crate) fn get_container(&self) -> &FetchedRobotsTxtContainer {
-        return &self.container;
+        &self.container
     }
 
     /// Returns the system time when the robots.txt file was downloaded over the network.
     pub fn get_fetched_at(&self) -> &SystemTime {
-        return &self.fetched_at;
+        &self.fetched_at
     }
 }

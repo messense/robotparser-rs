@@ -18,19 +18,19 @@ impl RobotsTxtService for RobotsTxt {
                     return Some(rule.get_allowance());
                 }
             }
-            return None;
+            None
         });
         if let Some(rule_decision) = rule_decision {
             return rule_decision;
         }
         // Empty robots.txt allows crawling. Everything that was not denied must be allowed.
-        return true;
+        true
     }
 
     fn get_crawl_delay(&self, user_agent: &str) -> Option<Duration> {
-        return self.find_in_group(user_agent, |group| {
-            return group.get_crawl_delay();
-        });
+        self.find_in_group(user_agent, |group| {
+            group.get_crawl_delay()
+        })
     }
 
     fn normalize_url(&self, url: &mut Url) -> bool {
@@ -38,7 +38,7 @@ impl RobotsTxtService for RobotsTxt {
             return false;
         }
         self.normalize_url_ignore_origin(url);
-        return true;
+        true
     }
 
     fn normalize_url_ignore_origin(&self, url: &mut Url) {
@@ -55,7 +55,7 @@ impl RobotsTxtService for RobotsTxt {
         let mut pairs: Vec<(String, String)> = url
             .query_pairs()
             .map(|(key, value)| {
-                return (key.into(), value.into());
+                (key.into(), value.into())
             })
             .collect();
         {
@@ -73,12 +73,12 @@ impl RobotsTxtService for RobotsTxt {
     }
 
     fn get_sitemaps(&self) -> &[Url] {
-        return self.get_sitemaps_slice();
+        self.get_sitemaps_slice()
     }
 
     fn get_req_rate(&self, user_agent: &str) -> Option<RequestRate> {
-        return self.find_in_group(user_agent, |group| {
-            return group.get_req_rate();
-        });
+        self.find_in_group(user_agent, |group| {
+            group.get_req_rate()
+        })
     }
 }

@@ -18,14 +18,14 @@ impl Rule {
     }
 
     pub(crate) fn applies_to(&self, path: &Path) -> bool {
-        return self.path_pattern.applies_to(path);
+        self.path_pattern.applies_to(path)
     }
 
     pub(crate) fn get_allowance(&self) -> bool {
-        return self.allowance;
+        self.allowance
     }
 
     pub(crate) fn get_path_pattern(&self) -> &PathPattern {
-        return &self.path_pattern;
+        &self.path_pattern
     }
 }

@@ -10,12 +10,12 @@ mod group_builder;
 pub use self::group_builder::GroupBuilder;
 
 const COMMENT_BEGIN_CHAR: char = '#';
-const KV_SEPARATOR: &'static str = ":";
+const KV_SEPARATOR: &str = ":";
 
 /// Parses the text of the robots.txt file located in the specified origin.
 pub fn parse(origin: Origin, input: &str) -> ParseResult<RobotsTxt> {
     let parser = Parser::new(origin);
-    return parser.parse(input);
+    parser.parse(input)
 }
 
 struct Parser {
@@ -26,11 +26,11 @@ struct Parser {
 
 impl Parser {
     pub fn new(origin: Origin) -> Parser {
-        return Parser {
+        Parser {
             result: RobotsTxt::new(origin),
             group_builder: GroupBuilder::new(),
             warnings: Vec::new(),
-        };
+        }
     }
 
     pub fn parse(mut self, input: &str) -> ParseResult<RobotsTxt> {
@@ -50,7 +50,7 @@ impl Parser {
             }
         }
         self.group_builder.fill_entries(&mut self.result);
-        return ParseResult::new_with_warnings(self.result, self.warnings);
+        ParseResult::new_with_warnings(self.result, self.warnings)
     }
 
     fn parse_line<'a>(line: &'a Line) -> Result<Option<Directive<'a>>, ParseWarning> {
@@ -62,7 +62,7 @@ impl Parser {
             return Ok(None);
         }
         let separator_index = kv_part.find(KV_SEPARATOR).ok_or_else(|| {
-            return ParseWarning::invalid_directive_format(line);
+            ParseWarning::invalid_directive_format(line)
         })?;
         if separator_index >= kv_part.len() {
             return Err(ParseWarning::invalid_directive_format(line));
@@ -75,7 +75,7 @@ impl Parser {
         let value = &kv_part[separator_index + 1..];
         let value = value.trim();
         let result = Directive::new(key, value);
-        return Ok(Some(result));
+        Ok(Some(result))
     }
 
     fn process_line_value(&mut self, line: &Line, directive: &Directive) {
@@ -123,7 +123,7 @@ impl Parser {
         if let Some(group) = self.group_builder.get_mut_active_group() {
             if directive.get_value() == "" {
                 // Nothing to do. Ignoring.
-            } else if directive.get_value().starts_with("*") || directive.get_value().starts_with("/") {
+            } else if directive.get_value().starts_with('*') || directive.get_value().starts_with('/') {
                 group.push_rule(Rule::new(directive.get_value(), true));
             } else {
                 self.warnings.push(ParseWarning::wrong_path_format(line));
@@ -138,7 +138,7 @@ impl Parser {
             if directive.get_value() == "" {
                 // Allow all.
                 group.push_rule(Rule::new(PathPattern::all(), true));
-            } else if directive.get_value().starts_with("*") || directive.get_value().starts_with("/") {
+            } else if directive.get_value().starts_with('*') || directive.get_value().starts_with('/') {
                 group.push_rule(Rule::new(directive.get_value(), false));
             } else {
                 self.warnings.push(ParseWarning::wrong_path_format(line));
@@ -206,18 +206,18 @@ impl Parser {
 
     fn process_directive_clean_param(&mut self, line: &Line, directive: &Directive) {
         let parts: Vec<&str> = directive.get_value().split_whitespace().collect();
-        if parts.len() >= 3 || parts.len() == 0 {
+        if parts.len() >= 3 || parts.is_empty() {
             self.warnings.push(ParseWarning::wrong_clean_param_format(line));
             return;
         }
-        if parts[0].len() == 0 {
+        if parts[0].is_empty() {
             self.warnings.push(ParseWarning::wrong_clean_param_format(line));
             return;
         }
         let clean_params_path_pattern;
         let clean_params;
         if let Some(second_param) = parts.get(1) {
-            if second_param.len() == 0 {
+            if second_param.is_empty() {
                 self.warnings.push(ParseWarning::wrong_clean_param_format(line));
                 return;
             }
@@ -248,7 +248,7 @@ impl Parser {
                 }
             }
         }
-        return (valid, invalid);
+        (valid, invalid)
     }
 
     fn is_valid_clean_param(clean_param: &str) -> bool {
@@ -270,14 +270,14 @@ impl Parser {
                 return false;
             }
         }
-        return true;
+        true
     }
 }
 
 fn ignore_bom(input: &str) -> &str {
-    const BOM: &'static str = "\u{feff}";
+    const BOM: &str = "\u{feff}";
     if input.starts_with(BOM) {
         return &input[BOM.len()..];
     }
-    return input;
+    input
 }

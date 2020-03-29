@@ -12,11 +12,11 @@ pub struct GroupBuilder {
 
 impl GroupBuilder {
     pub fn new() -> GroupBuilder {
-        return GroupBuilder {
+        GroupBuilder {
             state: State::WaitingForNewGroup,
             active_group: None,
             groups: Vec::new(),
-        };
+        }
     }
 
     pub fn handle_user_agent(&mut self, user_agent: &str) {
@@ -43,7 +43,7 @@ impl GroupBuilder {
         if let Some(active_group) = self.active_group {
             return self.groups.get_mut(active_group);
         }
-        return None;
+        None
     }
 
     pub fn fill_entries(mut self, robots_txt: &mut RobotsTxt) {

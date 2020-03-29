@@ -23,7 +23,7 @@ impl Group {
 
     /// check if this group applies to the specified agent
     pub(crate) fn applies_to(&self, useragent: &str) -> bool {
-        let ua = useragent.split('/').nth(0).unwrap_or("").to_lowercase();
+        let ua = useragent.split('/').next().unwrap_or("").to_lowercase();
         for agent in self.user_agents.iter() {
             if ua.contains(agent) {
                 return true;
@@ -33,7 +33,7 @@ impl Group {
     }
 
     pub(crate) fn push_useragent(&mut self, useragent: &str) {
-        self.user_agents.push(useragent.to_lowercase().to_owned());
+        self.user_agents.push(useragent.to_lowercase());
     }
 
     pub(crate) fn push_rule(&mut self, rule: Rule) {
@@ -45,18 +45,18 @@ impl Group {
         rules.sort_by(|a, b| {
             let a = a.get_path_pattern().len();
             let b = b.get_path_pattern().len();
-            return b.cmp(&a);
+            b.cmp(&a)
         });
-        return rules;
+        rules
     }
 
     pub(crate) fn contains_user_agent(&self, user_agent: &str) -> bool {
-        return self
+        self
             .user_agents
             .iter()
             .any(|item| {
-                return *item == user_agent;
-            });
+                *item == user_agent
+            })
     }
 
     pub(crate) fn set_crawl_delay(&mut self, delay: Duration) {
@@ -64,7 +64,7 @@ impl Group {
     }
 
     pub(crate) fn get_crawl_delay(&self) -> Option<Duration> {
-        return self.crawl_delay;
+        self.crawl_delay
     }
 
     pub(crate) fn set_req_rate(&mut self, req_rate: RequestRate) {
@@ -72,7 +72,7 @@ impl Group {
     }
 
     pub(crate) fn get_req_rate(&self) -> Option<RequestRate> {
-        return self.req_rate.clone();
+        self.req_rate.clone()
     }
 
     pub(crate) fn is_default(&self) -> bool {
@@ -81,7 +81,7 @@ impl Group {
                 return true;
             }
         }
-        return false;
+        false
     }
 }
 

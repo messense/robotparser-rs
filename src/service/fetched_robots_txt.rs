@@ -17,14 +17,14 @@ impl RobotsTxtService for FetchedRobotsTxt {
         if let &FetchedRobotsTxtContainer::Fetched(ref robots_txt) = self.get_container() {
             return robots_txt.get_crawl_delay(user_agent);
         }
-        return None;
+        None
     }
 
     fn normalize_url(&self, url: &mut Url) -> bool {
         if let &FetchedRobotsTxtContainer::Fetched(ref robots_txt) = self.get_container() {
             return robots_txt.normalize_url(url);
         }
-        return true;
+        true
     }
 
     fn normalize_url_ignore_origin(&self, url: &mut Url) {
@@ -37,13 +37,13 @@ impl RobotsTxtService for FetchedRobotsTxt {
         if let &FetchedRobotsTxtContainer::Fetched(ref robots_txt) = self.get_container() {
             return robots_txt.get_sitemaps();
         }
-        return &[];
+        &[]
     }
 
     fn get_req_rate(&self, user_agent: &str) -> Option<RequestRate> {
         if let &FetchedRobotsTxtContainer::Fetched(ref robots_txt) = self.get_container() {
             return robots_txt.get_req_rate(user_agent);
         }
-        return None;
+        None
     }
 }

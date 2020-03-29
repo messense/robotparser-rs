@@ -31,9 +31,9 @@ impl RobotsTxtClient for Client {
             let response_info = ResponseInfo {
                 status_code: response.status().as_u16(),
             };
-            return response.text().and_then(|response_text| {
-                return future_ok((response_info, response_text));
-            });
+            response.text().and_then(|response_text| {
+                future_ok((response_info, response_text))
+            })
         });
         let response: Pin<Box<dyn Future<Output = Result<(ResponseInfo, String), ReqwestError>>>> = Box::pin(response);
         Ok(RobotsTxtResponse { origin, response })
@@ -53,7 +53,7 @@ pub struct RobotsTxtResponse {
 impl RobotsTxtResponse {
     /// Returns origin of robots.txt
     pub fn get_origin(&self) -> &Origin {
-        return &self.origin;
+        &self.origin
     }
 }
 
@@ -66,13 +66,13 @@ impl Future for RobotsTxtResponse {
         match response_pin.poll(cx) {
             Poll::Ready(Ok((response_info, text))) => {
                 let robots_txt = parse_fetched_robots_txt(self_mut.origin.clone(), response_info.status_code, &text);
-                return Poll::Ready(Ok(robots_txt));
+                Poll::Ready(Ok(robots_txt))
             }
             Poll::Ready(Err(error)) => {
-                return Poll::Ready(Err(error));
+                Poll::Ready(Err(error))
             }
             Poll::Pending => {
-                return Poll::Pending;
+                Poll::Pending
             }
         }
     }

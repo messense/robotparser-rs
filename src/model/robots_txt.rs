@@ -15,12 +15,12 @@ pub struct RobotsTxt {
 
 impl RobotsTxt {
     pub(crate) fn new(origin: Origin) -> RobotsTxt {
-        return RobotsTxt {
+        RobotsTxt {
             origin,
             groups: Vec::new(),
             sitemaps: Vec::new(),
             clean_params: Vec::new(),
-        };
+        }
     }
 
     pub(crate) fn add_sitemap(&mut self, url: Url) {
@@ -28,7 +28,7 @@ impl RobotsTxt {
     }
 
     pub(crate) fn get_sitemaps_slice(&self) -> &[Url] {
-        return self.sitemaps.as_slice();
+        self.sitemaps.as_slice()
     }
 
     pub(crate) fn add_clean_params(&mut self, clean_params: CleanParams) {
@@ -36,7 +36,7 @@ impl RobotsTxt {
     }
 
     pub(crate) fn get_clean_params(&self) -> &[CleanParams] {
-        return self.clean_params.as_slice();
+        self.clean_params.as_slice()
     }
 
     pub(crate) fn add_group(&mut self, group: Group) {
@@ -44,7 +44,7 @@ impl RobotsTxt {
     }
 
     pub(crate) fn get_origin(&self) -> &Origin {
-        return &self.origin;
+        &self.origin
     }
 
     pub(crate) fn find_in_group<'a, T>(
@@ -65,7 +65,7 @@ impl RobotsTxt {
                 return Some(output);
             }
         }
-        return None;
+        None
     }
 
     pub(crate) fn get_default_group(&self) -> Option<&Group> {
@@ -74,6 +74,6 @@ impl RobotsTxt {
                 return Some(group);
             }
         }
-        return None;
+        None
     }
 }

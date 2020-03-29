@@ -137,40 +137,40 @@ impl From<&WarningReason> for WarningReasonKind {
     fn from(reason: &WarningReason) -> Self {
         match reason {
             &WarningReason::InvalidDirectiveFormat => {
-                return WarningReasonKind::InvalidDirectiveFormat;
+                WarningReasonKind::InvalidDirectiveFormat
             }
             &WarningReason::DirectiveKeyIsEmpty => {
-                return WarningReasonKind::DirectiveKeyIsEmpty;
+                WarningReasonKind::DirectiveKeyIsEmpty
             }
             &WarningReason::UnsupportedDirectiveKey { .. } => {
-                return WarningReasonKind::UnsupportedDirectiveKey;
+                WarningReasonKind::UnsupportedDirectiveKey
             }
             &WarningReason::UserAgentCannotBeEmpty => {
-                return WarningReasonKind::UserAgentCannotBeEmpty;
+                WarningReasonKind::UserAgentCannotBeEmpty
             }
             &WarningReason::DirectiveWithoutUserAgent => {
-                return WarningReasonKind::DirectiveWithoutUserAgent;
+                WarningReasonKind::DirectiveWithoutUserAgent
             }
             &WarningReason::ParseCrawlDelayError { .. } => {
-                return WarningReasonKind::ParseCrawlDelayError;
+                WarningReasonKind::ParseCrawlDelayError
             }
             &WarningReason::WrongRequestRateFormat => {
-                return WarningReasonKind::WrongRequestRateFormat;
+                WarningReasonKind::WrongRequestRateFormat
             }
             &WarningReason::ParseRequestRate { .. } => {
-                return WarningReasonKind::ParseRequestRate;
+                WarningReasonKind::ParseRequestRate
             }
             &WarningReason::ParseUrl { .. } => {
-                return WarningReasonKind::ParseUrl;
+                WarningReasonKind::ParseUrl
             }
             &WarningReason::WrongCleanParamFormat => {
-                return WarningReasonKind::WrongCleanParamFormat;
+                WarningReasonKind::WrongCleanParamFormat
             }
             &WarningReason::IgnoredCleanParams { .. } => {
-                return WarningReasonKind::IgnoredCleanParams;
+                WarningReasonKind::IgnoredCleanParams
             }
             &WarningReason::WrongPathFormat => {
-                return WarningReasonKind::WrongPathFormat;
+                WarningReasonKind::WrongPathFormat
             }
         }
     }

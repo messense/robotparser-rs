@@ -27,6 +27,6 @@ impl RobotsTxtClient for Client {
             kind: ErrorKind::Http(err),
         })?;
         let robots_txt = parse_fetched_robots_txt(origin, status_code, &text);
-        return Ok(robots_txt);
+        Ok(robots_txt)
     }
 }
