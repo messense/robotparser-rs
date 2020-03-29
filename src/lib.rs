@@ -30,11 +30,11 @@
 //! }
 //! ```
 
+/// Request builder & response parsers for other http libraries.
+pub mod http;
 /// Contains models of robots.txt file.
 pub mod model;
 /// Contains robots.txt parsers.
 pub mod parser;
 /// Contains robots.txt services.
 pub mod service;
-/// Request builder & response parsers for other http libraries.
-pub mod http;

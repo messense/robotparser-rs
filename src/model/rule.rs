@@ -1,5 +1,5 @@
-use crate::model::path_pattern::PathPattern;
 use crate::model::path::Path;
+use crate::model::path_pattern::PathPattern;
 
 /// A rule line is a single "Allow:" (allowance==True) or "Disallow:"
 /// (allowance==False) followed by a path."""
@@ -17,15 +17,15 @@ impl Rule {
         }
     }
 
-    pub (crate) fn applies_to(&self, path: &Path) -> bool {
+    pub(crate) fn applies_to(&self, path: &Path) -> bool {
         return self.path_pattern.applies_to(path);
     }
 
-    pub (crate) fn get_allowance(&self) -> bool {
+    pub(crate) fn get_allowance(&self) -> bool {
         return self.allowance;
     }
 
-    pub (crate) fn get_path_pattern(&self) -> &PathPattern {
+    pub(crate) fn get_path_pattern(&self) -> &PathPattern {
         return &self.path_pattern;
     }
 }

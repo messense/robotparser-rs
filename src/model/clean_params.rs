@@ -8,10 +8,7 @@ pub struct CleanParams {
 
 impl CleanParams {
     pub fn new(path_pattern: PathPattern, params: Vec<String>) -> CleanParams {
-        return CleanParams {
-            path_pattern,
-            params,
-        }
+        return CleanParams { path_pattern, params };
     }
 
     pub fn get_path_pattern(&self) -> &PathPattern {

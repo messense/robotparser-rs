@@ -1,6 +1,6 @@
-use url::ParseError as ParseUrlError;
-use std::num::{ParseFloatError, ParseIntError};
 use std::fmt;
+use std::num::{ParseFloatError, ParseIntError};
+use url::ParseError as ParseUrlError;
 
 #[derive(Clone, Debug)]
 /// Warning reason of robots.txt parser about problems when parsing robots.txt file.

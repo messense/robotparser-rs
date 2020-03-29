@@ -1,9 +1,9 @@
-use url::Url;
-use std::time::Duration;
-use crate::service::RobotsTxtService;
-use crate::model::RobotsTxt;
-use crate::model::RequestRate;
 use crate::model::Path;
+use crate::model::RequestRate;
+use crate::model::RobotsTxt;
+use crate::service::RobotsTxtService;
+use std::time::Duration;
+use url::Url;
 
 impl RobotsTxtService for RobotsTxt {
     fn can_fetch(&self, user_agent: &str, url: &Url) -> bool {
@@ -54,7 +54,7 @@ impl RobotsTxtService for RobotsTxt {
         }
         let mut pairs: Vec<(String, String)> = url
             .query_pairs()
-            .map(|(key, value)|{
+            .map(|(key, value)| {
                 return (key.into(), value.into());
             })
             .collect();

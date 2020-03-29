@@ -3,26 +3,29 @@ use std::fmt::Debug;
 
 #[derive(Debug)]
 /// The result of the robots.txt parser.
-pub struct ParseResult<R> where R: Debug {
+pub struct ParseResult<R>
+where
+    R: Debug,
+{
     result: R,
     warnings: Vec<ParseWarning>,
 }
 
-impl <R>ParseResult<R> where R: Debug {
+impl<R> ParseResult<R>
+where
+    R: Debug,
+{
     /// Creates a new structure for parser results.
-    pub (crate) fn new(result: R) -> ParseResult<R>{
+    pub(crate) fn new(result: R) -> ParseResult<R> {
         return ParseResult {
             result,
             warnings: Vec::new(),
-        }
+        };
     }
 
     /// Creates a new structure for parser results with warnings.
-    pub (crate) fn new_with_warnings(result: R, warnings: Vec<ParseWarning>) -> ParseResult<R>{
-        return ParseResult {
-            result,
-            warnings,
-        }
+    pub(crate) fn new_with_warnings(result: R, warnings: Vec<ParseWarning>) -> ParseResult<R> {
+        return ParseResult { result, warnings };
     }
 
     /// Returns the result of the robots.txt parser.
@@ -53,10 +56,13 @@ impl <R>ParseResult<R> where R: Debug {
     }
 
     /// Converts this structure into another type of structure.
-    pub (crate) fn map<T>(self, callback: impl Fn(R) -> T) -> ParseResult<T> where T: Debug {
+    pub(crate) fn map<T>(self, callback: impl Fn(R) -> T) -> ParseResult<T>
+    where
+        T: Debug,
+    {
         return ParseResult {
             result: (callback)(self.result),
             warnings: self.warnings,
-        }
+        };
     }
 }

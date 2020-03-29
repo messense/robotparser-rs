@@ -1,6 +1,6 @@
 use robotparser::parser::{parse_robots_txt, WarningReason};
-use url::{Host, Origin};
 use std::convert::From;
+use url::{Host, Origin};
 
 #[derive(PartialEq, Eq, Debug, Clone)]
 enum WarningReasonKind {
@@ -50,7 +50,6 @@ fn test_warning_supported_directive_key() {
     let input = "\t  X-Directive\t  :\t  ";
     validate_warnings(input, &[WarningReasonKind::UnsupportedDirectiveKey]);
 }
-
 
 #[test]
 fn test_warning_user_agent_cannot_be_empty() {
@@ -139,40 +138,40 @@ impl From<&WarningReason> for WarningReasonKind {
         match reason {
             &WarningReason::InvalidDirectiveFormat => {
                 return WarningReasonKind::InvalidDirectiveFormat;
-            },
+            }
             &WarningReason::DirectiveKeyIsEmpty => {
                 return WarningReasonKind::DirectiveKeyIsEmpty;
-            },
-            &WarningReason::UnsupportedDirectiveKey {..} => {
+            }
+            &WarningReason::UnsupportedDirectiveKey { .. } => {
                 return WarningReasonKind::UnsupportedDirectiveKey;
-            },
+            }
             &WarningReason::UserAgentCannotBeEmpty => {
                 return WarningReasonKind::UserAgentCannotBeEmpty;
-            },
+            }
             &WarningReason::DirectiveWithoutUserAgent => {
                 return WarningReasonKind::DirectiveWithoutUserAgent;
-            },
-            &WarningReason::ParseCrawlDelayError {..} => {
+            }
+            &WarningReason::ParseCrawlDelayError { .. } => {
                 return WarningReasonKind::ParseCrawlDelayError;
-            },
+            }
             &WarningReason::WrongRequestRateFormat => {
                 return WarningReasonKind::WrongRequestRateFormat;
-            },
-            &WarningReason::ParseRequestRate {..} => {
+            }
+            &WarningReason::ParseRequestRate { .. } => {
                 return WarningReasonKind::ParseRequestRate;
-            },
-            &WarningReason::ParseUrl {..} => {
+            }
+            &WarningReason::ParseUrl { .. } => {
                 return WarningReasonKind::ParseUrl;
-            },
+            }
             &WarningReason::WrongCleanParamFormat => {
                 return WarningReasonKind::WrongCleanParamFormat;
-            },
-            &WarningReason::IgnoredCleanParams {..} => {
+            }
+            &WarningReason::IgnoredCleanParams { .. } => {
                 return WarningReasonKind::IgnoredCleanParams;
-            },
+            }
             &WarningReason::WrongPathFormat => {
                 return WarningReasonKind::WrongPathFormat;
-            },
+            }
         }
     }
 }

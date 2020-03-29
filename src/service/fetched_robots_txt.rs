@@ -1,17 +1,15 @@
-use url::Url;
-use std::time::Duration;
-use crate::service::RobotsTxtService;
-use crate::model::{FetchedRobotsTxt, FetchedRobotsTxtContainer};
 use crate::model::RequestRate;
+use crate::model::{FetchedRobotsTxt, FetchedRobotsTxtContainer};
+use crate::service::RobotsTxtService;
+use std::time::Duration;
+use url::Url;
 
 impl RobotsTxtService for FetchedRobotsTxt {
     fn can_fetch(&self, user_agent: &str, url: &Url) -> bool {
         match self.get_container() {
             &FetchedRobotsTxtContainer::FetchDenied => false,
             &FetchedRobotsTxtContainer::FetchFailed => true,
-            &FetchedRobotsTxtContainer::Fetched(ref robots_txt) => {
-                robots_txt.can_fetch(user_agent, url)
-            }
+            &FetchedRobotsTxtContainer::Fetched(ref robots_txt) => robots_txt.can_fetch(user_agent, url),
         }
     }
 

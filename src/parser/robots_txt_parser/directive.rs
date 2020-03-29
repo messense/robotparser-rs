@@ -3,12 +3,9 @@ pub struct Directive<'a> {
     value: &'a str,
 }
 
-impl <'a> Directive<'a> {
+impl<'a> Directive<'a> {
     pub fn new(key: &'a str, value: &'a str) -> Directive<'a> {
-        return Directive {
-            key,
-            value,
-        }
+        return Directive { key, value };
     }
 
     pub fn get_key_lowercase(&self) -> String {

@@ -1,6 +1,6 @@
 use crate::model::{FetchedRobotsTxt, FetchedRobotsTxtContainer};
-use crate::parser::ParseResult;
 use crate::parser::parse_robots_txt;
+use crate::parser::ParseResult;
 use url::Origin;
 
 const UNAUTHORIZED: u16 = 401;
@@ -16,11 +16,10 @@ pub fn parse(origin: Origin, status_code: u16, input: &str) -> ParseResult<Fetch
             return ParseResult::new(FetchedRobotsTxt::new(FetchedRobotsTxtContainer::FetchDenied));
         }
         OK => {
-            return parse_robots_txt(origin, input)
-                .map(|result| {
-                    return FetchedRobotsTxt::new(FetchedRobotsTxtContainer::Fetched(result));
-                });
-        },
+            return parse_robots_txt(origin, input).map(|result| {
+                return FetchedRobotsTxt::new(FetchedRobotsTxtContainer::Fetched(result));
+            });
+        }
         _ => {
             return ParseResult::new(FetchedRobotsTxt::new(FetchedRobotsTxtContainer::FetchFailed));
         }

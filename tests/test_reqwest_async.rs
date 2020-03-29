@@ -1,8 +1,8 @@
+use reqwest::Client;
 use robotparser::http::RobotsTxtClient;
 use robotparser::service::RobotsTxtService;
-use reqwest::Client;
-use url::Url;
 use tokio::runtime::Runtime;
+use url::Url;
 use url::{Host, Origin};
 
 #[test]
@@ -25,6 +25,6 @@ fn test_reqwest_blocking_panic_url() {
     let origin = Origin::Tuple("https".into(), host, 80);
     match client.fetch_robots_txt(origin) {
         Ok(_) => assert!(false),
-        Err(_) => assert!(true)
+        Err(_) => assert!(true),
     }
 }

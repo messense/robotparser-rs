@@ -2,7 +2,7 @@ use crate::model::robots_txt::RobotsTxt;
 use std::time::SystemTime;
 
 #[derive(Debug, Clone)]
-pub (crate) enum FetchedRobotsTxtContainer {
+pub(crate) enum FetchedRobotsTxtContainer {
     FetchDenied,
     FetchFailed,
     Fetched(RobotsTxt),
@@ -19,13 +19,13 @@ pub struct FetchedRobotsTxt {
 }
 
 impl FetchedRobotsTxt {
-    pub (crate) fn new(container: FetchedRobotsTxtContainer) -> FetchedRobotsTxt {
+    pub(crate) fn new(container: FetchedRobotsTxtContainer) -> FetchedRobotsTxt {
         FetchedRobotsTxt {
             fetched_at: SystemTime::now(),
             container,
         }
     }
-    pub (crate) fn get_container(&self) -> &FetchedRobotsTxtContainer {
+    pub(crate) fn get_container(&self) -> &FetchedRobotsTxtContainer {
         return &self.container;
     }
 

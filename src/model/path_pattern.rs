@@ -1,7 +1,7 @@
+use crate::model::path::Path;
+use percent_encoding::percent_decode;
 use std::convert::From;
 use std::mem::replace;
-use percent_encoding::percent_decode;
-use crate::model::path::Path;
 
 #[derive(Debug, Clone)]
 pub struct PathPattern(Vec<PathPatternToken>);
@@ -23,16 +23,10 @@ impl PathPatternToken {
 impl PathPatternToken {
     fn len(&self) -> usize {
         return match self {
-            &PathPatternToken::Text(ref text) => {
-                text.len()
-            },
-            &PathPatternToken::AnyString => {
-                1
-            },
-            &PathPatternToken::TerminateString => {
-                1
-            },
-        }
+            &PathPatternToken::Text(ref text) => text.len(),
+            &PathPatternToken::AnyString => 1,
+            &PathPatternToken::TerminateString => 1,
+        };
     }
 }
 
@@ -42,16 +36,12 @@ impl PathPattern {
         let mut tokens = Vec::new();
         for c in path.chars() {
             let prepared_token = match c {
-                '*' => {
-                    Some(PathPatternToken::AnyString)
-                },
-                '$' => {
-                    Some(PathPatternToken::TerminateString)
-                },
+                '*' => Some(PathPatternToken::AnyString),
+                '$' => Some(PathPatternToken::TerminateString),
                 _ => {
                     text.push(c);
                     None
-                },
+                }
             };
             if let Some(prepared_token) = prepared_token {
                 if !text.is_empty() {
@@ -82,8 +72,8 @@ impl PathPattern {
                     if !filename.starts_with(text) {
                         return false;
                     }
-                    filename = &filename[text.len() ..];
-                },
+                    filename = &filename[text.len()..];
+                }
                 &PathPatternToken::AnyString => {
                     if let Some(&PathPatternToken::Text(ref text)) = self.0.get(index + 1) {
                         while filename.len() >= 1 {
@@ -100,12 +90,12 @@ impl PathPattern {
                     } else {
                         filename = &filename[filename.len()..];
                     }
-                },
+                }
                 &PathPatternToken::TerminateString => {
                     if filename.len() != 0 {
                         return false;
                     }
-                },
+                }
             }
         }
         return true;

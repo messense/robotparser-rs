@@ -1,9 +1,9 @@
-use url::{Origin, Url};
-use std::time::Duration;
-use crate::parser::parse_result::ParseResult;
-use crate::model::{RobotsTxt, Rule, PathPattern, CleanParams, RequestRate};
+use crate::model::{CleanParams, PathPattern, RequestRate, RobotsTxt, Rule};
 use crate::parser::line::Line;
+use crate::parser::parse_result::ParseResult;
 use crate::parser::warning::ParseWarning;
+use std::time::Duration;
+use url::{Origin, Url};
 mod directive;
 use self::directive::Directive;
 mod group_builder;
@@ -30,7 +30,7 @@ impl Parser {
             result: RobotsTxt::new(origin),
             group_builder: GroupBuilder::new(),
             warnings: Vec::new(),
-        }
+        };
     }
 
     pub fn parse(mut self, input: &str) -> ParseResult<RobotsTxt> {
@@ -42,11 +42,11 @@ impl Parser {
             match Self::parse_line(&line) {
                 Ok(Some(line_value)) => {
                     self.process_line_value(&line, &line_value);
-                },
+                }
                 Err(warning) => {
                     self.warnings.push(warning);
-                },
-                _ => {},
+                }
+                _ => {}
             }
         }
         self.group_builder.fill_entries(&mut self.result);
@@ -84,29 +84,29 @@ impl Parser {
             // Group specific directives
             "user-agent" => {
                 self.process_directive_user_agent(line, directive);
-            },
+            }
             "allow" => {
                 self.process_directive_allow(line, directive);
-            },
+            }
             "disallow" => {
                 self.process_directive_disallow(line, directive);
-            },
+            }
             "crawl-delay" => {
                 self.process_directive_crawl_delay(line, directive);
-            },
+            }
             "request-rate" => {
                 self.process_directive_request_rate(line, directive);
-            },
+            }
             // Non-group directives
             "sitemap" => {
                 self.process_directive_sitemap(line, directive);
-            },
+            }
             "clean-param" => {
                 self.process_directive_clean_param(line, directive);
-            },
+            }
             _ => {
                 self.warnings.push(ParseWarning::unsupported_directive_key(line, key));
-            },
+            }
         }
     }
 
@@ -156,10 +156,10 @@ impl Parser {
                     let delay_nanoseconds = delay.fract() * 10f64.powi(9);
                     let delay = Duration::new(delay_seconds as u64, delay_nanoseconds as u32);
                     group.set_crawl_delay(delay);
-                },
+                }
                 Err(error) => {
                     self.warnings.push(ParseWarning::parse_crawl_delay_error(line, error));
-                },
+                }
             }
         } else {
             self.warnings.push(ParseWarning::directive_without_user_agent(line));
@@ -174,20 +174,20 @@ impl Parser {
                 return;
             }
             let requests = match numbers[0].parse::<usize>() {
-                Ok(requests) => {requests},
+                Ok(requests) => requests,
                 Err(error) => {
                     self.warnings.push(ParseWarning::parse_request_rate(line, error));
                     return;
-                },
+                }
             };
             let seconds = match numbers[1].parse::<usize>() {
-                Ok(seconds) => {seconds},
+                Ok(seconds) => seconds,
                 Err(error) => {
                     self.warnings.push(ParseWarning::parse_request_rate(line, error));
                     return;
-                },
+                }
             };
-            group.set_req_rate(RequestRate{requests, seconds});
+            group.set_req_rate(RequestRate { requests, seconds });
         } else {
             self.warnings.push(ParseWarning::directive_without_user_agent(line));
         }
@@ -197,10 +197,10 @@ impl Parser {
         match Url::parse(directive.get_value()) {
             Ok(sitemap_url) => {
                 self.result.add_sitemap(sitemap_url);
-            },
+            }
             Err(error) => {
                 self.warnings.push(ParseWarning::parse_url(line, error));
-            },
+            }
         }
     }
 
@@ -229,9 +229,11 @@ impl Parser {
         }
         let (valid_clean_params, invalid_clean_params) = Self::parse_clean_params(clean_params);
         if !invalid_clean_params.is_empty() {
-            self.warnings.push(ParseWarning::ignored_clean_params(line, invalid_clean_params));
+            self.warnings
+                .push(ParseWarning::ignored_clean_params(line, invalid_clean_params));
         }
-        self.result.add_clean_params(CleanParams::new(clean_params_path_pattern, valid_clean_params));
+        self.result
+            .add_clean_params(CleanParams::new(clean_params_path_pattern, valid_clean_params));
     }
 
     fn parse_clean_params(clean_params: &str) -> (Vec<String>, Vec<String>) {

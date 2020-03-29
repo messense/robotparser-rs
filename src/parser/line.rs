@@ -3,12 +3,9 @@ pub struct Line<'a> {
     position: usize,
 }
 
-impl <'a>Line<'a> {
+impl<'a> Line<'a> {
     pub fn new(line: &'a str, position: usize) -> Line<'a> {
-        return Line {
-            line,
-            position,
-        }
+        return Line { line, position };
     }
 
     pub fn get_line_text(&self) -> &str {
