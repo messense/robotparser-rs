@@ -135,19 +135,19 @@ fn test_warning_wrong_path_format() {
 
 impl From<&WarningReason> for WarningReasonKind {
     fn from(reason: &WarningReason) -> Self {
-        match reason {
-            &WarningReason::InvalidDirectiveFormat => WarningReasonKind::InvalidDirectiveFormat,
-            &WarningReason::DirectiveKeyIsEmpty => WarningReasonKind::DirectiveKeyIsEmpty,
-            &WarningReason::UnsupportedDirectiveKey { .. } => WarningReasonKind::UnsupportedDirectiveKey,
-            &WarningReason::UserAgentCannotBeEmpty => WarningReasonKind::UserAgentCannotBeEmpty,
-            &WarningReason::DirectiveWithoutUserAgent => WarningReasonKind::DirectiveWithoutUserAgent,
-            &WarningReason::ParseCrawlDelayError { .. } => WarningReasonKind::ParseCrawlDelayError,
-            &WarningReason::WrongRequestRateFormat => WarningReasonKind::WrongRequestRateFormat,
-            &WarningReason::ParseRequestRate { .. } => WarningReasonKind::ParseRequestRate,
-            &WarningReason::ParseUrl { .. } => WarningReasonKind::ParseUrl,
-            &WarningReason::WrongCleanParamFormat => WarningReasonKind::WrongCleanParamFormat,
-            &WarningReason::IgnoredCleanParams { .. } => WarningReasonKind::IgnoredCleanParams,
-            &WarningReason::WrongPathFormat => WarningReasonKind::WrongPathFormat,
+        match *reason {
+            WarningReason::InvalidDirectiveFormat => WarningReasonKind::InvalidDirectiveFormat,
+            WarningReason::DirectiveKeyIsEmpty => WarningReasonKind::DirectiveKeyIsEmpty,
+            WarningReason::UnsupportedDirectiveKey { .. } => WarningReasonKind::UnsupportedDirectiveKey,
+            WarningReason::UserAgentCannotBeEmpty => WarningReasonKind::UserAgentCannotBeEmpty,
+            WarningReason::DirectiveWithoutUserAgent => WarningReasonKind::DirectiveWithoutUserAgent,
+            WarningReason::ParseCrawlDelayError { .. } => WarningReasonKind::ParseCrawlDelayError,
+            WarningReason::WrongRequestRateFormat => WarningReasonKind::WrongRequestRateFormat,
+            WarningReason::ParseRequestRate { .. } => WarningReasonKind::ParseRequestRate,
+            WarningReason::ParseUrl { .. } => WarningReasonKind::ParseUrl,
+            WarningReason::WrongCleanParamFormat => WarningReasonKind::WrongCleanParamFormat,
+            WarningReason::IgnoredCleanParams { .. } => WarningReasonKind::IgnoredCleanParams,
+            WarningReason::WrongPathFormat => WarningReasonKind::WrongPathFormat,
         }
     }
 }
