@@ -64,7 +64,7 @@ impl Group {
     }
 
     pub(crate) fn get_crawl_delay(&self) -> Option<Duration> {
-        return self.crawl_delay.clone();
+        return self.crawl_delay;
     }
 
     pub(crate) fn set_req_rate(&mut self, req_rate: RequestRate) {
