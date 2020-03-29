@@ -54,10 +54,9 @@ impl Group {
         return self
             .user_agents
             .iter()
-            .find(|item| {
+            .any(|item| {
                 return *item == user_agent;
-            })
-            .is_some();
+            });
     }
 
     pub(crate) fn set_crawl_delay(&mut self, delay: Duration) {
