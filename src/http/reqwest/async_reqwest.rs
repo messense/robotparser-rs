@@ -15,6 +15,7 @@ use std::pin::Pin;
 use url::{Origin, Url};
 
 type FetchFuture = Box<dyn Future<Output = Result<(ResponseInfo, String), ReqwestError>>>;
+type BoxFuture = Pin<FetchFuture>;
 
 impl RobotsTxtClient for Client {
     type Result = Result<RobotsTxtResponse, Error>;
@@ -35,7 +36,7 @@ impl RobotsTxtClient for Client {
                 .text()
                 .and_then(|response_text| future_ok((response_info, response_text)))
         });
-        let response: Pin<Box<dyn Future<Output = Result<(ResponseInfo, String), ReqwestError>>>> = Box::pin(response);
+        let response: BoxFuture = Box::pin(response);
         Ok(RobotsTxtResponse { origin, response })
     }
 }
