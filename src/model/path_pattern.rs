@@ -22,10 +22,10 @@ impl PathPatternToken {
 
 impl PathPatternToken {
     fn len(&self) -> usize {
-        match self {
-            &PathPatternToken::Text(ref text) => text.len(),
-            &PathPatternToken::AnyString => 1,
-            &PathPatternToken::TerminateString => 1,
+        match *self {
+            PathPatternToken::Text(ref text) => text.len(),
+            PathPatternToken::AnyString => 1,
+            PathPatternToken::TerminateString => 1,
         }
     }
 }
@@ -67,15 +67,15 @@ impl PathPattern {
     pub fn applies_to(&self, path: &Path) -> bool {
         let mut filename = path.as_str();
         for (index, token) in self.0.iter().enumerate() {
-            match token {
-                &PathPatternToken::Text(ref text) => {
+            match *token {
+                PathPatternToken::Text(ref text) => {
                     if !filename.starts_with(text) {
                         return false;
                     }
                     filename = &filename[text.len()..];
                 }
-                &PathPatternToken::AnyString => {
-                    if let Some(&PathPatternToken::Text(ref text)) = self.0.get(index + 1) {
+                PathPatternToken::AnyString => {
+                    if let Some(PathPatternToken::Text(ref text)) = self.0.get(index + 1) {
                         while !filename.is_empty() {
                             if filename.starts_with(text) {
                                 break;
@@ -91,7 +91,7 @@ impl PathPattern {
                         filename = &filename[filename.len()..];
                     }
                 }
-                &PathPatternToken::TerminateString => {
+                PathPatternToken::TerminateString => {
                     if !filename.is_empty() {
                         return false;
                     }
