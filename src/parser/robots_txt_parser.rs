@@ -253,19 +253,12 @@ impl Parser {
 
     fn is_valid_clean_param(clean_param: &str) -> bool {
         for c in clean_param.chars() {
-            let mut is_valid = false;
-            if ('A'..'Z').contains(&c) {
-                is_valid = true;
-            }
-            if ('a'..'z').contains(&c) {
-                is_valid = true;
-            }
-            if ('0'..'9').contains(&c) {
-                is_valid = true;
-            }
-            if c == '.' || c == '-' || c == '_' {
-                is_valid = true;
-            }
+            let is_valid = ('A'..'Z').contains(&c)
+                || ('a'..'z').contains(&c)
+                || ('0'..'9').contains(&c)
+                || c == '.'
+                || c == '-'
+                || c == '_';
             if !is_valid {
                 return false;
             }
