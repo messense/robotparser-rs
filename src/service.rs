@@ -1,8 +1,8 @@
-mod robots_txt;
 mod fetched_robots_txt;
-use url::Url;
-use std::time::Duration;
+mod robots_txt;
 use crate::model::RequestRate;
+use std::time::Duration;
+use url::Url;
 
 /// Trait that implements robots txt service.
 pub trait RobotsTxtService {

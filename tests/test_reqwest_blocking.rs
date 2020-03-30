@@ -1,6 +1,6 @@
+use reqwest::blocking::Client;
 use robotparser::http::RobotsTxtClient;
 use robotparser::service::RobotsTxtService;
-use reqwest::blocking::Client;
 use url::Url;
 use url::{Host, Origin};
 
@@ -20,8 +20,7 @@ fn test_reqwest_blocking_panic_url() {
     let client = Client::new();
     let host = Host::Domain("python.org::".into());
     let origin = Origin::Tuple("https".into(), host, 80);
-    match client.fetch_robots_txt(origin) {
-        Ok(_) => assert!(false),
-        Err(_) => assert!(true)
+    if client.fetch_robots_txt(origin).is_ok() {
+        panic!()
     }
 }

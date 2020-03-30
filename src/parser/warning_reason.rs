@@ -1,6 +1,6 @@
-use url::ParseError as ParseUrlError;
-use std::num::{ParseFloatError, ParseIntError};
 use std::fmt;
+use std::num::{ParseFloatError, ParseIntError};
+use url::ParseError as ParseUrlError;
 
 #[derive(Clone, Debug)]
 /// Warning reason of robots.txt parser about problems when parsing robots.txt file.
@@ -38,41 +38,41 @@ pub enum WarningReason {
 /// Displays text of warning reason.
 impl fmt::Display for WarningReason {
     fn fmt(&self, f: &mut fmt::Formatter) -> Result<(), fmt::Error> {
-        match &self {
-            &Self::InvalidDirectiveFormat => {
+        match self {
+            Self::InvalidDirectiveFormat => {
                 write!(f, "Invalid directive format.")
             },
-            &Self::DirectiveKeyIsEmpty => {
+            Self::DirectiveKeyIsEmpty => {
                 write!(f, "Directive key is empty.")
             },
-            &Self::UnsupportedDirectiveKey(key) => {
+            Self::UnsupportedDirectiveKey(key) => {
                 write!(f, "Directive key `{}` is not suppored by this parser.", key)
             },
-            &Self::UserAgentCannotBeEmpty => {
+            Self::UserAgentCannotBeEmpty => {
                 write!(f, "Passed directive key is `User-Agent` and passed value is empty.")
             },
-            &Self::DirectiveWithoutUserAgent => {
+            Self::DirectiveWithoutUserAgent => {
                 write!(f, "It is impossible to process this directive before `User-Agent` directive has not been processed.")
             },
-            &Self::ParseCrawlDelayError(err) => {
+            Self::ParseCrawlDelayError(err) => {
                 write!(f, "It is impossible to process the `Crawl-Delay` directive because of an error when parsing a floating point number: {}", err)
             },
-            &Self::WrongRequestRateFormat => {
+            Self::WrongRequestRateFormat => {
                 write!(f, "Incorrect format of the `Request-Rate` directive")
             },
-            &Self::ParseRequestRate(err) => {
+            Self::ParseRequestRate(err) => {
                 write!(f, "Incorrect format of the `Request-Rate` directive: {}", err)
             },
-            &Self::ParseUrl(err) => {
+            Self::ParseUrl(err) => {
                 write!(f, "Parsing URL error: {}", err)
             },
-            &Self::WrongCleanParamFormat => {
+            Self::WrongCleanParamFormat => {
                 write!(f, "Incorrect format of the `Clean-Param` directive.")
             },
-            &Self::IgnoredCleanParams(ref params) => {
+            Self::IgnoredCleanParams(ref params) => {
                 write!(f, "Directive `Clean-Param` directive has incorrect parameters: {:?}", params)
             },
-            &Self::WrongPathFormat => {
+            Self::WrongPathFormat => {
                 write!(f, "Error in URL path format.")
             },
         }

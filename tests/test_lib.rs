@@ -3,7 +3,7 @@ use robotparser::service::RobotsTxtService;
 use std::time::Duration;
 use url::Url;
 
-const AGENT: &'static str = "test_robotparser";
+const AGENT: &str = "test_robotparser";
 
 fn robot_test(doc: &str, good_urls: Vec<&str>, bad_urls: Vec<&str>, agent: &str) {
     let url = Url::parse("https://www.baidu.com/robots.txt").unwrap();
@@ -20,7 +20,6 @@ fn robot_test(doc: &str, good_urls: Vec<&str>, bad_urls: Vec<&str>, agent: &str)
     }
 }
 
-
 fn robot_test_simple(doc: &str, good_urls: Vec<&str>, bad_urls: Vec<&str>) {
     robot_test(doc, good_urls, bad_urls, AGENT);
 }
@@ -33,11 +32,10 @@ fn test_robots_txt_rn_bom() {
     Disallow: /tmp/ # these will soon disappear\r\n\
     Disallow: /foo.html\r\n\
     ";
-    let good = vec!["/","/test.html"];
-    let bad = vec!["/cyberworld/map/index.html","/tmp/xxx","/foo.html"];
+    let good = vec!["/", "/test.html"];
+    let bad = vec!["/cyberworld/map/index.html", "/tmp/xxx", "/foo.html"];
     robot_test_simple(doc, good, bad);
 }
-
 
 #[test]
 fn test_robots_txt_1() {
@@ -47,11 +45,10 @@ fn test_robots_txt_1() {
     Disallow: /tmp/ # these will soon disappear\n\
     Disallow: /foo.html\n\
     ";
-    let good = vec!["/","/test.html"];
-    let bad = vec!["/cyberworld/map/index.html","/tmp/xxx","/foo.html"];
+    let good = vec!["/", "/test.html"];
+    let bad = vec!["/cyberworld/map/index.html", "/tmp/xxx", "/foo.html"];
     robot_test_simple(doc, good, bad);
 }
-
 
 #[test]
 fn test_robots_txt_2() {
@@ -66,7 +63,7 @@ fn test_robots_txt_2() {
     Disallow:\n\
     \n\
     ";
-    let good = vec!["/","/test.html"];
+    let good = vec!["/", "/test.html"];
     let bad = vec!["/cyberworld/map/index.html"];
     robot_test_simple(doc, good, bad);
 
@@ -82,7 +79,7 @@ fn test_robots_txt_3() {
     Disallow: /\n\
     ";
     let good = vec![];
-    let bad = vec!["/cyberworld/map/index.html","/","/tmp/"];
+    let bad = vec!["/cyberworld/map/index.html", "/", "/tmp/"];
     robot_test_simple(doc, good, bad);
 }
 
@@ -97,8 +94,13 @@ fn test_robots_txt_4() {
     ";
     let good = vec![];
     let bad = vec![
-        "/tmp", "/tmp.html", "/tmp/a.html", "/a%3cd.html", "/a%3Cd.html",
-        "/a%2fb.html", "/~joe/index.html",
+        "/tmp",
+        "/tmp.html",
+        "/tmp/a.html",
+        "/a%3cd.html",
+        "/a%3Cd.html",
+        "/a%2fb.html",
+        "/~joe/index.html",
     ];
     robot_test(doc, good.clone(), bad.clone(), "figtree");
     robot_test(doc, good, bad, "FigTree Robot libwww-perl/5.04");
@@ -115,8 +117,12 @@ fn test_robots_txt_5() {
     ";
     let good = vec!["/tmp"];
     let bad = vec![
-        "/tmp/", "/tmp/a.html", "/a%3cd.html", "/a%3Cd.html",
-        "/a/b.html", "/%7Ejoe/index.html",
+        "/tmp/",
+        "/tmp/a.html",
+        "/a%3cd.html",
+        "/a%3Cd.html",
+        "/a/b.html",
+        "/%7Ejoe/index.html",
     ];
     robot_test_simple(doc, good, bad);
 }
@@ -246,8 +252,8 @@ fn test_robots_txt_14() {
 #[cfg(feature = "http")]
 #[test]
 fn test_robots_txt_read() {
-    use robotparser::http::{CreateRobotsTxtRequest, ParseRobotsTxtResponse};
     use reqwest::{Client, Request};
+    use robotparser::http::{CreateRobotsTxtRequest, ParseRobotsTxtResponse};
     let http_client = Client::new();
     let url = Url::parse("https://www.python.org/robots.txt").unwrap();
     let request = Request::create_robots_txt_request(url.origin());
@@ -263,7 +269,10 @@ fn test_robots_text_crawl_delay() {
     Crawl-delay: 2.35\n\
     Disallow: /search/\n";
     let parser = parse_robots_txt(robots_txt_url.origin(), doc).get_result();
-    assert_eq!(Duration::new(2,350 * 1000 * 1000), parser.get_crawl_delay("Yandex").unwrap());
+    assert_eq!(
+        Duration::new(2, 350 * 1000 * 1000),
+        parser.get_crawl_delay("Yandex").unwrap()
+    );
 }
 
 #[test]
@@ -288,8 +297,7 @@ fn test_robots_text_sitemaps() {
 #[test]
 fn test_robots_text_request_rate() {
     let robots_txt_url = Url::parse("https://www.python.org/robots.txt").unwrap();
-    let doc =
-        "User-agent: Yandex\n\
+    let doc = "User-agent: Yandex\n\
         Request-rate: 3/15\n\
         Disallow: /search/\n";
     let parser = parse_robots_txt(robots_txt_url.origin(), doc).get_result();
@@ -300,7 +308,6 @@ fn test_robots_text_request_rate() {
     let req_rate = parser.get_req_rate("Google");
     assert!(req_rate.is_none());
 }
-
 
 #[test]
 fn test_robots_text_clean_params() {
@@ -315,13 +322,18 @@ Clean-param: amp\n\
     ";
     let url = Url::parse("https://www.baidu.com/robots.txt").unwrap();
     let parser = parse_robots_txt(url.origin(), doc).get_result();
-    let mut site_url = Url::parse("https://www.baidu.com/test?post_id=7777&mode=99&from=google&pid=99&gid=88&tm=777&amp=1").unwrap();
+    let mut site_url =
+        Url::parse("https://www.baidu.com/test?post_id=7777&mode=99&from=google&pid=99&gid=88&tm=777&amp=1").unwrap();
     let was_updated = parser.normalize_url(&mut site_url);
     assert_eq!(was_updated, true);
     assert_eq!(site_url.as_str(), "https://www.baidu.com/test?post_id=7777");
 
-    let mut site_url = Url::parse("https://www.google.com/test?post_id=7777&mode=99&from=google&pid=99&gid=88&tm=777&amp=1").unwrap();
+    let mut site_url =
+        Url::parse("https://www.google.com/test?post_id=7777&mode=99&from=google&pid=99&gid=88&tm=777&amp=1").unwrap();
     let was_updated = parser.normalize_url(&mut site_url);
     assert_eq!(was_updated, false);
-    assert_eq!(site_url.as_str(), "https://www.google.com/test?post_id=7777&mode=99&from=google&pid=99&gid=88&tm=777&amp=1");
+    assert_eq!(
+        site_url.as_str(),
+        "https://www.google.com/test?post_id=7777&mode=99&from=google&pid=99&gid=88&tm=777&amp=1"
+    );
 }
