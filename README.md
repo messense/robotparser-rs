@@ -1,6 +1,6 @@
 # robotparser-rs
 
-[![GitHub Actions](https://github.com/messense/robotparser-rs/workflows/Main%20workflow/badge.svg)](https://github.com/messense/robotparser-rs/actions?query=workflow%3A%22Main+workflow%22)
+[![GitHub Actions](https://github.com/messense/robotparser-rs/workflows/CI/badge.svg)](https://github.com/messense/robotparser-rs/actions?query=workflow%3ACI)
 [![Coverage Status](https://coveralls.io/repos/messense/robotparser-rs/badge.svg)](https://coveralls.io/r/messense/robotparser-rs)
 [![Crates.io](https://img.shields.io/crates/v/robotparser.svg)](https://crates.io/crates/robotparser)
 [![Dependency status](https://deps.rs/repo/github/messense/robotparser-rs/status.svg)](https://deps.rs/repo/github/messense/robotparser-rs)
