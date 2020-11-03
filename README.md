@@ -17,8 +17,6 @@ Add it to your ``Cargo.toml``:
 robotparser = "0.11"
 ```
 
-Add ``extern crate robotparser`` to your crate root and your're good to go!
-
 
 ## Examples
 
