@@ -267,8 +267,5 @@ impl Parser {
 
 fn ignore_bom(input: &str) -> &str {
     const BOM: &str = "\u{feff}";
-    if input.starts_with(BOM) {
-        return &input[BOM.len()..];
-    }
-    input
+    input.trim_start_matches(BOM)
 }
