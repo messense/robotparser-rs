@@ -6,7 +6,7 @@ pub struct Path(String);
 
 impl Path {
     pub fn from_url(url: &Url) -> Path {
-        let path = get_url_without_origin(&url);
+        let path = get_url_without_origin(url);
         let path = percent_decode(path.as_bytes()).decode_utf8_lossy();
         if path.is_empty() {
             Path("/".into())
