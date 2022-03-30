@@ -21,7 +21,7 @@ enum WarningReasonKind {
 fn validate_warnings(input: &str, expected_warnings: &[WarningReasonKind]) {
     let host = Host::Domain("python.org".into());
     let origin = Origin::Tuple("http".into(), host, 80);
-    let warnings = parse_robots_txt(origin, &input).get_warnings().to_vec();
+    let warnings = parse_robots_txt(origin, input).get_warnings().to_vec();
     assert_eq!(warnings.len(), expected_warnings.len());
     for (warning, expected_warning) in warnings.iter().zip(expected_warnings.iter()) {
         let warning: WarningReasonKind = warning.get_reason().into();

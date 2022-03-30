@@ -325,13 +325,13 @@ Clean-param: amp\n\
     let mut site_url =
         Url::parse("https://www.baidu.com/test?post_id=7777&mode=99&from=google&pid=99&gid=88&tm=777&amp=1").unwrap();
     let was_updated = parser.normalize_url(&mut site_url);
-    assert_eq!(was_updated, true);
+    assert!(was_updated);
     assert_eq!(site_url.as_str(), "https://www.baidu.com/test?post_id=7777");
 
     let mut site_url =
         Url::parse("https://www.google.com/test?post_id=7777&mode=99&from=google&pid=99&gid=88&tm=777&amp=1").unwrap();
     let was_updated = parser.normalize_url(&mut site_url);
-    assert_eq!(was_updated, false);
+    assert!(!was_updated);
     assert_eq!(
         site_url.as_str(),
         "https://www.google.com/test?post_id=7777&mode=99&from=google&pid=99&gid=88&tm=777&amp=1"
