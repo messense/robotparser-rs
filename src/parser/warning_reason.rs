@@ -41,40 +41,47 @@ impl fmt::Display for WarningReason {
         match self {
             Self::InvalidDirectiveFormat => {
                 write!(f, "Invalid directive format.")
-            },
+            }
             Self::DirectiveKeyIsEmpty => {
                 write!(f, "Directive key is empty.")
-            },
+            }
             Self::UnsupportedDirectiveKey(key) => {
                 write!(f, "Directive key `{}` is not suppored by this parser.", key)
-            },
+            }
             Self::UserAgentCannotBeEmpty => {
                 write!(f, "Passed directive key is `User-Agent` and passed value is empty.")
-            },
+            }
             Self::DirectiveWithoutUserAgent => {
-                write!(f, "It is impossible to process this directive before `User-Agent` directive has not been processed.")
-            },
+                write!(
+                    f,
+                    "It is impossible to process this directive before `User-Agent` directive has not been processed."
+                )
+            }
             Self::ParseCrawlDelayError(err) => {
                 write!(f, "It is impossible to process the `Crawl-Delay` directive because of an error when parsing a floating point number: {}", err)
-            },
+            }
             Self::WrongRequestRateFormat => {
                 write!(f, "Incorrect format of the `Request-Rate` directive")
-            },
+            }
             Self::ParseRequestRate(err) => {
                 write!(f, "Incorrect format of the `Request-Rate` directive: {}", err)
-            },
+            }
             Self::ParseUrl(err) => {
                 write!(f, "Parsing URL error: {}", err)
-            },
+            }
             Self::WrongCleanParamFormat => {
                 write!(f, "Incorrect format of the `Clean-Param` directive.")
-            },
+            }
             Self::IgnoredCleanParams(ref params) => {
-                write!(f, "Directive `Clean-Param` directive has incorrect parameters: {:?}", params)
-            },
+                write!(
+                    f,
+                    "Directive `Clean-Param` directive has incorrect parameters: {:?}",
+                    params
+                )
+            }
             Self::WrongPathFormat => {
                 write!(f, "Error in URL path format.")
-            },
+            }
         }
     }
 }
