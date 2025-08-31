@@ -15,5 +15,7 @@ mod fetched_robots_txt;
 pub use self::robots_txt::RobotsTxt;
 mod path;
 pub(crate) use self::path::Path;
+#[cfg(feature = "reqwest")]
 mod errors;
+#[cfg(feature = "reqwest")]
 pub use self::errors::{Error, ErrorKind};

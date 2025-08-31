@@ -249,7 +249,7 @@ fn test_robots_txt_14() {
     robot_test_simple(doc, good, bad);
 }
 
-#[cfg(feature = "http")]
+#[cfg(feature = "reqwest")]
 #[test]
 fn test_robots_txt_read() {
     use reqwest::{Client, Request};
